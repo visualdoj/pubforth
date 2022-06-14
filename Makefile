@@ -43,13 +43,13 @@ bin :
 
 TESTPROGRAMS:=bin/testprograms$(EXEEXT)
 $(TESTPROGRAMS) : prepare_build .build/tool
-	cd tool/testprograms && fpc $(FPC_FLAGS) -Sew -Sen -FE../../bin -FU../../.build/tool testprograms.pas
+	cd tool/testprograms && fpc $(FPC_FLAGS) -Sew -FE../../bin -FU../../.build/tool testprograms.pas
 
 build_tools : $(TESTPROGRAMS) ;
 
 PUBFORTH:=bin/pubforth$(EXEEXT)
 build : prepare_build build_tools .build bin
-	cd src && fpc $(FPC_FLAGS) -Sew -Sen -FE../bin -FU../.build pubforth.pas
+	cd src && fpc $(FPC_FLAGS) -Sew -FE../bin -FU../.build pubforth.pas
 
 test : $(TESTPROGRAMS)
 	$(TESTPROGRAMS) -l tests.list -d .build
