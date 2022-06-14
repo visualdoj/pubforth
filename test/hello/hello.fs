@@ -1,0 +1,1 @@
+: MAIN ." Hello world!" ;
