@@ -19,7 +19,7 @@ PASS:=(exit 0)
 clean :
 	rmdir /s /q .build || $(PASS)
 	rmdir /s /q bin    || $(PASS)
-MKDIRP:=md
+MKDIRP:=mkdir
 else
 EXEEXT:=
 PASS:=true
@@ -42,7 +42,7 @@ bin :
 	cd .build && $(MKDIRP) tool || $(PASS)
 
 TESTPROGRAMS:=bin/testprograms$(EXEEXT)
-$(TESTPROGRAMS) : prepare_build .build/tool
+$(TESTPROGRAMS) : prepare_build .build/tool bin
 	cd tool/testprograms && fpc $(FPC_FLAGS) -Sew -FE../../bin -FU../../.build/tool testprograms.pas
 
 build_tools : $(TESTPROGRAMS) ;
