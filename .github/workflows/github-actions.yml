@@ -1,5 +1,5 @@
 name: Autobuild PubForth
-on: [push]
+on: [push, pull_request]
 jobs:
   GitHub-Actions:
     strategy:
