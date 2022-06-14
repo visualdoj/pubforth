@@ -11,8 +11,6 @@ usage :
 
 .PHONY : usage build
 
-FORCE :
-
 FPC_FLAGS := -vq -O2 -Oodfa -gl
 
 ifeq ($(OS),Windows_NT)
@@ -29,9 +27,11 @@ clean :
 PASS:=true
 endif
 
+.PHONY : .build
 .build :
 	$(MKDIRP) .build || $(PASS)
 
+.PHONY : bin
 bin :
 	$(MKDIRP) bin || $(PASS)
 
