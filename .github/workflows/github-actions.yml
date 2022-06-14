@@ -8,7 +8,7 @@ jobs:
         os: [windows-latest, ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "☁️ This job is now running on a ${{ runner.os }} server hosted by GitHub!"
 
       - name: Check out
         uses: actions/checkout@v3
@@ -41,20 +41,18 @@ jobs:
       - name: Print Free Pascal Version
         run: fpc -i
 
-      - name: Build PubForth
+      - name: 🔨 Build PubForth
         working-directory: ${{ github.workspace }}/pubforth
         run: make build
 
-      - name: Print PubForth version
+      - name: 📋 Print PubForth version
         working-directory: ${{ github.workspace }}/pubforth
         run: bin/pubforth --version
 
-      - name: Make package
+      - name: 📦 Make package
         working-directory: ${{ github.workspace }}/pubforth
         run: echo TODO package
 
-      - name: Test PubForth
+      - name: 🔬 Test PubForth
         working-directory: ${{ github.workspace }}/pubforth
         run: make test
-
-      - run: echo "🍏 This job's status is ${{ job.status }}."
