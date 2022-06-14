@@ -31,6 +31,10 @@ jobs:
           choco install freepascal
           refreshenv
 
+      - name: Workaround for missed PATH settings (choco)
+        if: runner.os == 'Windows'
+        run: echo "C:\\tools\\freepascal\\bin\\i386-win32" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
       - name: Install Free Pascal Compiler (visualdoj/setup-fpc)
         if: false && (runner.os == 'Windows') && (steps.cache_fpc_installation_path.outputs.cache-hit != 'true')
         uses: visualdoj/setup-fpc@v0.1.11-beta
