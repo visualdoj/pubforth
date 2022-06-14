@@ -18,8 +18,7 @@ uses
 {$ELSEIF Defined(WINDOWS)}
   windows,
 {$ENDIF}
-  sysutils,
-  variants;
+  sysutils;
 
 // Stdout
 procedure Print(const S: AnsiString); overload;
