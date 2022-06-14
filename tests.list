@@ -1,12 +1,12 @@
 # Test some simple runs
-cd . && bin/pubforth -h
-cd . && bin/pubforth --usage
-cd . && bin/pubforth --help
-cd . && bin/pubforth --long-help
-cd . && bin/pubforth --version
+bin/pubforth -h
+bin/pubforth --usage
+bin/pubforth --help
+bin/pubforth --long-help
+bin/pubforth --version
 
 # Test backends
-cd test/hello && ../../bin/pubforth hello.fs -o hello.fs.dump
-cd test/hello && ../../bin/pubforth hello.fs -o hello.fs.pas
-cd test/hello && ../../bin/pubforth hello.fs -o hello.fs.c
-cd test/hello && ../../bin/pubforth hello.fs -o hello.fs.fasm
+bin/pubforth hello.fs -o hello.fs.dump
+bin/pubforth hello.fs -o hello.fs.pas
+bin/pubforth hello.fs -o hello.fs.c
+bin/pubforth hello.fs -o hello.fs.fasm

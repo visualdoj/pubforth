@@ -15,16 +15,18 @@ FPC_FLAGS := -vq -O2 -Oodfa -gl
 
 ifeq ($(OS),Windows_NT)
 EXEEXT := .exe
-clean :
-	rmdir /s /q .build
-MKDIRP:=md
 PASS:=(exit 0)
+clean :
+	rmdir /s /q .build || $(PASS)
+	rmdir /s /q bin    || $(PASS)
+MKDIRP:=md
 else
 EXEEXT:=
+PASS:=true
 MKDIRP:=mkdir -p
 clean :
-	rm -rf .build
-PASS:=true
+	rm -rf .build || $(PASS)
+	rm -rf bin    || $(PASS)
 endif
 
 .PHONY : .build
