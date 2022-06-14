@@ -32,7 +32,7 @@ jobs:
           refreshenv
 
       - name: Install Free Pascal Compiler (visualdoj/setup-fpc)
-        if: ${{ false }} && (runner.os == 'Windows') && (steps.cache_fpc_installation_path.outputs.cache-hit != 'true')
+        if: false && (runner.os == 'Windows') && (steps.cache_fpc_installation_path.outputs.cache-hit != 'true')
         uses: visualdoj/setup-fpc@v0.1.11-beta
 
       # We need this step in case if previous step skipped due to caching
@@ -40,7 +40,7 @@ jobs:
       # condition supporting in composite actions
       # See https://github.com/actions/runner/issues/646 for details
       - name: Update PATH
-        if: ${{ false }} && (runner.os == 'Windows')
+        if: false && (runner.os == 'Windows')
         run: echo ${{ github.workspace }}\.fpc\release_3_2_2\bin\i386-win32 | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
         shell: powershell
 
