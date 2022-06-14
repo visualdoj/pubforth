@@ -9,7 +9,7 @@ usage :
 
 .SECONDARY:
 
-.PHONY : usage build svn_export export
+.PHONY : usage build
 
 FORCE :
 
@@ -17,8 +17,6 @@ FPC_FLAGS := -vq -O2 -Oodfa -gl
 
 ifeq ($(OS),Windows_NT)
 EXEEXT := .exe
-svn_export : FORCE
-	TortoiseProc /command:dropexport /path:"." /droptarget:"D:\data\opensource" /overwrite
 clean :
 	rmdir /s /q .build
 MKDIRP:=md
@@ -32,10 +30,10 @@ PASS:=true
 endif
 
 .build :
-	$(MKDIRP) .build || $(PATH)
+	$(MKDIRP) .build || $(PASS)
 
 bin :
-	$(MKDIRP) bin || $(PATH)
+	$(MKDIRP) bin || $(PASS)
 
 .PHONY : .build/tool
 .build/tool : .build
@@ -53,8 +51,6 @@ build : prepare_build build_tools .build bin
 
 test : $(TESTPROGRAMS)
 	$(TESTPROGRAMS) -l tests.list -d .build
-
-export : svn_export ;
 
 
 ifneq ($(wildcard ../pubforth_external/Makefile.inc),)
