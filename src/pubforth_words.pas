@@ -54,7 +54,7 @@ const
   FLAG_FORTH2012_XCHAR_EXT      = FLAG_FORTH2012_XCHAR     or FLAG_FORTH2012_EXTENSION;
   FLAG_EXPERIMENT               = 1 shl 18; // the word has experimental support
   FLAG_PUBFORTH_REPL            = 1 shl 19; // the word is used only in PubForth REPL mode
-  FLAG_PUBFORTH_RELEASE         = 1 shl 20; // not a word, but pubforth release
+  FLAG_PUBFORTH_MILESTONE       = 1 shl 20; // not a word, but pubforth release
   FLAG_IMPLEMENTED              = 1 shl 21;
   FLAG_OBSOLESCENT              = 1 shl 22; // Forth 2012 marks some words as obsolescent
 
@@ -131,9 +131,9 @@ const
 STATIC_WORDS_ARRAY: array[0 .. 480 - 1] of TWordInfo = (
   // Words should be ordered by the planned sequence of implementation
 
-  (N: 'Preparations: repository, initial code, build, test';         E: nil; T: 1655177154; F: FLAG_PUBFORTH_RELEASE),
-  (N: 'GitHub workflow';                                             E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
-  (N: '`PubForth 0.0.0`: Zero-day release with effectively no words supported';     E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
+  (N: '[Initial repository, build, test](docs/news/initial.md)';         E: nil; T: 1655177154; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '[GitHub workflow](docs/news/workflow.md)';                        E: nil; T: 1655325933; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '`PubForth 0.0.0`: Zero-day release with effectively no words supported';     E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
 
   (N: ':';                  E: 'colon';               T: 0; F: FLAG_FORTH2012_CORE),
   (N: ';';                  E: 'semicolon';           T: 0; F: FLAG_FORTH2012_CORE),
@@ -141,7 +141,7 @@ STATIC_WORDS_ARRAY: array[0 .. 480 - 1] of TWordInfo = (
   (N: 'CR';                 E: nil;                   T: 0; F: FLAG_FORTH2012_CORE),
   (N: '(';                  E: 'paren';               T: 0; F: FLAG_FORTH2012_CORE),
   (N: '\';                  E: 'backslash';           T: 0; F: FLAG_FORTH2012_CORE_EXT),
-  (N: '`PubForth 0.1.0`: "Hello world" starter pack';    E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
+  (N: '`PubForth 0.1.0`: "Hello world" starter pack';    E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
 
   (N: '.';                  E: 'dot';                 T: 0; F: FLAG_FORTH2012_CORE),
   (N: 'SWAP';               E: nil;                   T: 0; F: FLAG_FORTH2012_CORE),
@@ -191,7 +191,7 @@ STATIC_WORDS_ARRAY: array[0 .. 480 - 1] of TWordInfo = (
   (N: 'BASE';               E: nil;                   T: 0; F: FLAG_FORTH2012_CORE),
   (N: 'DECIMAL';            E: nil;                   T: 0; F: FLAG_FORTH2012_CORE),
   (N: 'HEX';                E: nil;                   T: 0; F: FLAG_FORTH2012_CORE_EXT),
-  (N: '`PubForth 0.2.0`: "Stack calculator" edition';    E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
+  (N: '`PubForth 0.2.0`: "Stack calculator" edition';    E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
 
   (N: '!';                  E: 'store';               T: 0; F: FLAG_FORTH2012_CORE),
   (N: '#';                  E: 'number_sign';         T: 0; F: FLAG_FORTH2012_CORE),
@@ -281,7 +281,7 @@ STATIC_WORDS_ARRAY: array[0 .. 480 - 1] of TWordInfo = (
   (N: '['']';               E: 'bracket_tick';        T: 0; F: FLAG_FORTH2012_CORE),
   (N: '[CHAR]';             E: 'bracket_char';        T: 0; F: FLAG_FORTH2012_CORE),
   (N: ']';                  E: 'right_bracket';       T: 0; F: FLAG_FORTH2012_CORE),
-  (N: '`PubForth 0.3.0`: Core word set';    E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
+  (N: '`PubForth 0.3.0`: Core word set';    E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
   (N: '.(';                 E: 'dot_paren';           T: 0; F: FLAG_FORTH2012_CORE_EXT),
   (N: '.R';                 E: 'dot_r';               T: 0; F: FLAG_FORTH2012_CORE_EXT),
   (N: '2>R';                E: 'two_to_r';            T: 0; F: FLAG_FORTH2012_CORE_EXT),
@@ -589,31 +589,31 @@ STATIC_WORDS_ARRAY: array[0 .. 480 - 1] of TWordInfo = (
   (N: 'K-UP';               E: 'k_up';                T: 0; F: FLAG_FORTH2012_FACILITY_EXT),
   (N: 'MS';                 E: nil;                   T: 0; F: FLAG_FORTH2012_FACILITY_EXT),
   (N: 'TIME&DATE';          E: 'time_and_date';       T: 0; F: FLAG_FORTH2012_FACILITY_EXT),
-  (N: '`PubForth 0.TBA.0`: Core Extensions word set';                E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
-  (N: '`PubForth 0.TBA.0`: Programming-Tools word set';              E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
-  (N: '`PubForth 0.TBA.0`: Programming-Tools Extensions word set';   E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
-  (N: '`PubForth 0.TBA.0`: String word set';                         E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
-  (N: '`PubForth 0.TBA.0`: String Extensions word set';              E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
-  (N: '`PubForth 0.TBA.0`: File Access word set';                    E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
-  (N: '`PubForth 0.TBA.0`: File Access Extensions word set';         E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
-  (N: '`PubForth 0.TBA.0`: Extended-Character word set';             E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
-  (N: '`PubForth 0.TBA.0`: Extended-Character Extensions word set';  E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
-  (N: '`PubForth 0.TBA.0`: Locals word set';                         E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
-  (N: '`PubForth 0.TBA.0`: Locals Extensions word set';              E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
-  (N: '`PubForth 0.TBA.0`: Block word set';                          E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
-  (N: '`PubForth 0.TBA.0`: Block Extensions word set';               E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
-  (N: '`PubForth 0.TBA.0`: Double-Number word set';                  E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
-  (N: '`PubForth 0.TBA.0`: Double-Number Extensions word set';       E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
-  (N: '`PubForth 0.TBA.0`: Exception word set';                      E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
-  (N: '`PubForth 0.TBA.0`: Exception Extensions word set';           E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
-  (N: '`PubForth 0.TBA.0`: Facility word set';                       E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
-  (N: '`PubForth 0.TBA.0`: Facility Extensions word set';            E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
-  (N: '`PubForth 0.TBA.0`: Floating-Point word set';                 E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
-  (N: '`PubForth 0.TBA.0`: Floating-Point Extensions word set';      E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
-  (N: '`PubForth 0.TBA.0`: Memory-Allocation word set';              E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
-  (N: '`PubForth 0.TBA.0`: Search-Order word set';                   E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
-  (N: '`PubForth 0.TBA.0`: Search-Order Extensions word set';        E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE),
-  (N: '`PubForth 1.0.0`';  E: nil; T: 0; F: FLAG_PUBFORTH_RELEASE)
+  (N: '`PubForth 0.TBA.0`: Core Extensions word set';                E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '`PubForth 0.TBA.0`: Programming-Tools word set';              E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '`PubForth 0.TBA.0`: Programming-Tools Extensions word set';   E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '`PubForth 0.TBA.0`: String word set';                         E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '`PubForth 0.TBA.0`: String Extensions word set';              E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '`PubForth 0.TBA.0`: File Access word set';                    E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '`PubForth 0.TBA.0`: File Access Extensions word set';         E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '`PubForth 0.TBA.0`: Extended-Character word set';             E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '`PubForth 0.TBA.0`: Extended-Character Extensions word set';  E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '`PubForth 0.TBA.0`: Locals word set';                         E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '`PubForth 0.TBA.0`: Locals Extensions word set';              E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '`PubForth 0.TBA.0`: Block word set';                          E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '`PubForth 0.TBA.0`: Block Extensions word set';               E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '`PubForth 0.TBA.0`: Double-Number word set';                  E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '`PubForth 0.TBA.0`: Double-Number Extensions word set';       E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '`PubForth 0.TBA.0`: Exception word set';                      E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '`PubForth 0.TBA.0`: Exception Extensions word set';           E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '`PubForth 0.TBA.0`: Facility word set';                       E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '`PubForth 0.TBA.0`: Facility Extensions word set';            E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '`PubForth 0.TBA.0`: Floating-Point word set';                 E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '`PubForth 0.TBA.0`: Floating-Point Extensions word set';      E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '`PubForth 0.TBA.0`: Memory-Allocation word set';              E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '`PubForth 0.TBA.0`: Search-Order word set';                   E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '`PubForth 0.TBA.0`: Search-Order Extensions word set';        E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '`PubForth 1.0.0`';  E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE)
 
 );
 
@@ -633,7 +633,7 @@ begin
     //  STATIC_WORDS_ARRAY[I].E := STATIC_WORDS_ARRAY[I].N;
 
     if (I > 0) and (STATIC_WORDS_ARRAY[I].T = 0) then begin
-      //if (STATIC_WORDS_ARRAY[I].F and FLAG_PUBFORTH_RELEASE) = 0 then begin
+      //if (STATIC_WORDS_ARRAY[I].F and FLAG_PUBFORTH_MILESTONE) = 0 then begin
       if Pos('PubForth', STATIC_WORDS_ARRAY[I].N) = 0 then begin
         Inc(PrevT, 60*60*24);
         STATIC_WORDS_ARRAY[I].T := PrevT;
@@ -804,7 +804,7 @@ begin
     Cross := '';
     if (STATIC_WORDS_ARRAY[I].F and FLAG_IMPLEMENTED) <> 0 then begin
       CheckBox := 'x';
-      if Pos('PubForth', Name) = 0 then
+      if (Pos('PubForth', Name) = 0) and (Pos('[', Name) = 0) then
         Cross := '~~';
     end;
     WriteLine('- [' + CheckBox + '] ' + Cross + TimestampToDate(STATIC_WORDS_ARRAY[I].T) + ' ' + Name + EscapedName + Cross);

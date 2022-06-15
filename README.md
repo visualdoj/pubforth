@@ -1,3 +1,5 @@
+[![Autobuild PubForth](https://github.com/visualdoj/pubforth/actions/workflows/github-actions.yml/badge.svg)](https://github.com/visualdoj/pubforth/actions/workflows/github-actions.yml)
+
 # PubForth - Public Domain Forth
 
 Cross-platform public domain implementation of Forth. Written in Pascal.
@@ -15,8 +17,8 @@ Progress: 0%
 
 One day - one word. 💪 *(Not mandatory...)*
 
-- [x] ~~2022.06.14 Preparations: repository, initial code, build, test~~
-- [ ] 2022.06.15 GitHub workflow
+- [x] 2022.06.14 [Initial repository, build, test](docs/news/initial.md)
+- [x] 2022.06.15 [GitHub workflow](docs/news/workflow.md)
 - [ ] 202?.??.?? `PubForth 0.0.0`: Zero-day release with effectively no words supported
 - [ ] 2022.06.16 `:` "colon"
 - [ ] 2022.06.17 `;` "semicolon"
