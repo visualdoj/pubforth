@@ -25,6 +25,10 @@ jobs:
           brew update
           brew install fpc
 
+      - name: Install GNU Core Utils (choco)
+        if: runner.os == 'Windows'
+        run: choco install gnuwin32-coreutils.install
+
       - name: Install Free Pascal Compiler (choco)
         if: false && (runner.os == 'Windows')
         run: |
@@ -66,7 +70,7 @@ jobs:
         run: |
             bin/pubforth --version
             echo "::set-output name=version::$(bin/pubforth --short-version)"
-            echo "::set-output name=package::pubforth-${{ runner.os }}-x64-$(bin/pubforth --short-version)"
+            echo "::set-output name=package::pubforth-$(bin/pubforth --short-version)-${{ runner.os }}-x64"
 
       - name: 📦 Make package
         working-directory: ${{ github.workspace }}
