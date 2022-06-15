@@ -51,6 +51,11 @@ jobs:
       - name: Print Free Pascal Version
         run: fpc -i
 
+      - name: Generate Free Pascal Config
+        if: runner.os == 'Windows'
+        working-directory: ${{ github.workspace }}/pubforth
+        run: fpcmkcfg -d basepath=${{ github.workspace }}\.fpc\release_3_2_2 -o ${{ github.workspace }}\.fpc\release_3_2_2\bin\i386-win32\fpc.cfg 
+
       - name: 🔨 Build PubForth
         working-directory: ${{ github.workspace }}/pubforth
         run: make build
