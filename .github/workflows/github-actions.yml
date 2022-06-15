@@ -78,7 +78,7 @@ jobs:
             mkdir "${{ steps.pubforth_version.outputs.package }}"
             mkdir "${{ steps.pubforth_version.outputs.package }}/bin"
             cp pubforth/bin/pubforth* "${{ steps.pubforth_version.outputs.package }}/bin/"
-            tar -cvf "${{ steps.pubforth_version.outputs.package }}.tar" "${{ steps.pubforth_version.outputs.package }}"/*
+            tar -cvf "${{ steps.pubforth_version.outputs.package }}.tar" ${{ steps.pubforth_version.outputs.package }}/*
 
       - name: 🤐 Zip it
         uses: thedoctor0/zip-release@main
