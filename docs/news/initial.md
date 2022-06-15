@@ -1,12 +1,12 @@
 *It is not a documentation, just a news post with some plans and brief explanations.*
 
-# 15 june 2022: PubFoth - announcment
+# 15 june 2022: PubFoth - announcement
 
 `PubForth` is cross-platform implementation of standard `Forth` language. It should work at least on Windows, Linux, macOS, but all other supported by Free Pascal Compiler platforms with standard OS facilities (terminal, file system etc) and at least 32 bits are already supported or "not-hard-to-be-ported".
 
 As a "standard Forth" I've chosen `Forth 2012 Standard`: https://forth-standard.org/
 
-By default it runs a virtual machine which produces intermediate code. That intermediate code may be `translated` to other language by some implemented backend: Pascal, C, Assembly language etc.
+By default `PubForth` runs a virtual machine which produces intermediate code. That intermediate code may be *translated* to other language by some implemented backend: Pascal, C, Assembly language etc.
 
 All sources are dedicated to public domain, i.e. they may be used in any way by anybody.
 
@@ -55,12 +55,12 @@ pubforth --repl
 
 pubforth prog.fs
 
-        Interprets Forth program from prog.fs
+        Interprets Forth program prog.fs
 ```
 
 ## Backends
 
-To produce a source code for backend, backend name and output file should be provided:
+To produce a source code for a backend, backend name and output file name should be provided:
 
 ```
 pubforth prog.fs --backend pascal -o prog.pas
