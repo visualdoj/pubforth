@@ -66,7 +66,7 @@ jobs:
         run: |
             bin/pubforth --version
             echo "::set-output name=version::$(bin/pubforth --short-version)"
-            echo "::set-output name=package::$(bin/pubforth --short-version)"
+            echo "::set-output name=package::pubforth-${{ runner.os }}-x64-$(bin/pubforth --short-version)"
 
       - name: 📦 Make package
         working-directory: ${{ github.workspace }}
@@ -74,7 +74,7 @@ jobs:
             mkdir "${{ steps.pubforth_version.outputs.package }}"
             mkdir "${{ steps.pubforth_version.outputs.package }}/bin"
             mv pubforth/bin/pubforth* "${{ steps.pubforth_version.outputs.package }}/bin/"
-            tar -cvf "${{ steps.pubforth_version.outputs.package }}.tar" "${{ steps.pubforth_version.outputs.package }}/*"
+            tar -cvf "${{ steps.pubforth_version.outputs.package }}.tar" "${{ steps.pubforth_version.outputs.package }}"/*
 
       - name: 🤐 Zip it
         uses: thedoctor0/zip-release@main
