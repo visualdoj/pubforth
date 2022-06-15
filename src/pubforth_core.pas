@@ -24,6 +24,11 @@ const
 const
   OP_NOP          = 0;
   OP_LITERAL      = 1;
+  OP_CR           = 2;
+  OP_CALL         = 3;
+  OP_ENTER        = 4;
+  OP_DOT          = 5;
+  OP_BYE          = 6;
 
 
 implementation

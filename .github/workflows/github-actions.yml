@@ -61,12 +61,40 @@ jobs:
         run: make build
 
       - name: 📋 Print PubForth version
+        id: pubforth_version
         working-directory: ${{ github.workspace }}/pubforth
-        run: bin/pubforth --version
+        run: |
+            bin/pubforth --version
+            echo "::set-output name=version::$(bin/pubforth --short-version)"
+            echo "::set-output name=package::$(bin/pubforth --short-version)"
 
       - name: 📦 Make package
-        working-directory: ${{ github.workspace }}/pubforth
-        run: echo TODO package
+        working-directory: ${{ github.workspace }}
+        run: |
+            mkdir "${{ steps.pubforth_version.outputs.package }}"
+            mkdir "${{ steps.pubforth_version.outputs.package }}/bin"
+            mv pubforth/bin/pubforth* "${{ steps.pubforth_version.outputs.package }}/bin/"
+            tar -cvf "${{ steps.pubforth_version.outputs.package }}.tar" "${{ steps.pubforth_version.outputs.package }}/*"
+
+      - name: 🤐 Zip it
+        uses: thedoctor0/zip-release@main
+        with:
+            type:      'zip'
+            directory: ${{ github.workspace }}
+            filename:  ${{ steps.pubforth_version.outputs.package }}.zip
+            path:      ${{ steps.pubforth_version.outputs.package }}
+
+      - name: 🛪 Upload tar
+        uses: actions/upload-artifact@v3
+        with:
+          name: "${{ steps.pubforth_version.outputs.package }}.tar"
+          path: "${{ github.workspace }}/${{ steps.pubforth_version.outputs.package }}.tar"
+
+      - name: 🛪 Upload zip
+        uses: actions/upload-artifact@v3
+        with:
+          name: "${{ steps.pubforth_version.outputs.package }}.zip"
+          path: "${{ github.workspace }}/${{ steps.pubforth_version.outputs.package }}.zip"
 
       - name: 🔬 Test PubForth
         working-directory: ${{ github.workspace }}/pubforth

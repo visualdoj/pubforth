@@ -60,6 +60,7 @@ TPubForthCLArgs = object
   Usage: Boolean;
   LongHelp: Boolean;
   Version: Boolean;
+  ShortVersion: Boolean;
   PrintPlan: Boolean;
   PatchReadme: Boolean;
   PrintStdList: Boolean;
@@ -85,6 +86,7 @@ end;
 procedure PrintUsage;
 procedure PrintLongHelp;
 procedure PrintVersion;
+procedure PrintShortVersion;
 
 procedure PrintStdList;
 
@@ -158,6 +160,7 @@ begin
   NoArgs := True;
   Usage := False;
   Version := False;
+  ShortVersion := False;
   PrintPlan := False;
   PatchReadme := False;
   PrintStdList := False;
@@ -189,6 +192,8 @@ begin
       LongHelp := True
     end else if (ParamStr(I) = '-v') or (ParamStr(I) = '--version') then begin
       Version := True;
+    end else if ParamStr(I) = '--short-version' then begin
+      ShortVersion := True;
     end else if ParamStr(I) = '--print-plan' then begin
       PrintPlan := True;
     end else if ParamStr(I) = '--patch-readme' then begin
@@ -350,6 +355,9 @@ begin
   A('  pubforth -v|--version');
   L('     Prints version');
   L('');
+  L('  pubforth --short-version');
+  L('     Prints short version in format <major.minor.patch>');
+  L('');
   L('  pubforth --patch-readme README.md');
   L('     Patchs README.md with some information known from source code');
   L('');
@@ -415,6 +423,11 @@ begin
   Writeln;
   Writeln('Public domain implementation of Forth');
   Writeln('https://github.com/visualdoj/pubforth');
+end;
+
+procedure PrintShortVersion;
+begin
+  Writeln(PUBFORTH_VERSION_MAJOR, '.', PUBFORTH_VERSION_MINOR, '.', PUBFORTH_VERSION_PATCH);
 end;
 
 procedure PrintStdList;

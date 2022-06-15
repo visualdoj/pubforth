@@ -15,7 +15,7 @@ unit pubforth_backend;
 interface
 
 uses
-  pubforth_dictionary;
+  pubforth_machine;
 
 type
 PTranslationTask = ^TTranslationTask;

@@ -10,6 +10,8 @@ unit pubforth_dictionary;
 interface
 
 type
+TSemanticFunction = function(Machine: PMachine): Boolean;
+
 PDictionaryRecord = ^TDictionaryRecord;
 TDictionaryRecord = object
   Name: AnsiString;
@@ -125,13 +127,25 @@ begin
   Exit(False);
 end;
 
+function CompareCaseInsensitive(Name, NameEnd: PAnsiChar; S: PAnsiChar): Boolean;
+begin
+  while Name < NameEnd do begin
+    if UpCase(Name^) <> UpCase(S^) then
+      Exit(False);
+    Inc(Name);
+    Inc(S);
+  end;
+  Exit(True);
+  // Exit(CompareByte(It^.Name[1], Name^, NameEnd - Name) = 0);
+end;
+
 function TDictionary.Find(Name, NameEnd: PAnsiChar; out Rec: PDictionaryRecord): Boolean;
 var
   It: PDictionaryRecord;
 begin
   It := FLast;
   while It <> nil do begin
-    if (Length(It^.Name) = NameEnd - Name) and (CompareByte(It^.Name[1], Name^, NameEnd - Name) = 0) then begin
+    if (Length(It^.Name) = NameEnd - Name) and CompareCaseInsensitive(Name, NameEnd, S) then begin
       Rec := It;
       Exit(True);
     end;

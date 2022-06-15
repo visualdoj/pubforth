@@ -11,8 +11,8 @@ interface
 
 uses
   dfilereader,
-  pubforth_command_line_args,
-  pubforth_dictionary;
+  pubforth_core,
+  pubforth_command_line_args;
 
 type
 TInputSourceSpecification = record
@@ -85,11 +85,43 @@ PValueLoopSys   = ^TValueLoopSys;
 PValueNestSys   = ^TValueNestSys;
 
 const
-  FLAG_TRUE       = -1;
-  FLAG_FASLE      = 0;
+  FLAG_TRUE           = -1;
+  FLAG_FASLE          = 0;
+  STATE_INTERPRETING  = 0;
+  STATE_COMPILE       = -1;
 
 type
+PDictionary = ^TDictionary;
+PDictionaryRecord = ^TDictionaryRecord;
 PMachine = ^TMachine;
+
+TSemantic = function (Machine: PMachine): Boolean;
+
+TDictionaryRecord = object
+  Name: AnsiString;
+  Next: PDictionaryRecord;
+  Semantic: TSemantic;
+  Immediate: Boolean;
+  Opcode: Int32;
+end;
+
+TDictionary = object
+private
+  FLast: PDictionaryRecord;
+
+public
+  procedure Init;
+  procedure Done;
+
+  procedure LoadDefaultWords;
+
+  function CreateDifinition(const Name: AnsiString): PDictionaryRecord;
+
+  function Find(const Name: AnsiString; out Rec: PDictionaryRecord): Boolean;
+  function Find(Name, NameEnd: PAnsiChar; out Rec: PDictionaryRecord): Boolean;
+      // Returns False if not found
+end;
+
 TMachine = object
 private
   FState: PtrInt;
@@ -108,8 +140,16 @@ public
   procedure Init;
   procedure Done;
 
+  procedure RegIntrisic(const Name: AnsiString; F: TSemantic; Opcode: Int32);
+  procedure RegImmediate(const Name: AnsiString; F: TSemantic);
+
   procedure Configurate(Args: PPubForthCLArgs);
       // Should be called after Init.
+
+  procedure ConfigureREPL;
+
+  procedure Compile(Opcode: Int32);
+  procedure CompileCall(Xt: PDictionaryRecord);
 
   function IsInterpreting: Boolean; inline;
 
@@ -185,10 +225,116 @@ begin
   Exit(C in [32..126]);
 end;
 
+procedure TDictionary.Init;
+begin
+  FLast := nil;
+end;
+
+procedure TDictionary.Done;
+begin
+end;
+
+procedure TDictionary.LoadDefaultWords;
+begin
+end;
+
+function TDictionary.CreateDifinition(const Name: AnsiString): PDictionaryRecord;
+begin
+  New(Result);
+  Result^.Name := Name;
+  Result^.Next := FLast;
+  Result^.Semantic := nil;
+  Result^.Immediate := False;
+  Result^.Opcode := -1;
+  FLast := Result;
+end;
+
+function TDictionary.Find(const Name: AnsiString; out Rec: PDictionaryRecord): Boolean;
+var
+  It: PDictionaryRecord;
+begin
+  It := FLast;
+  while It <> nil do begin
+    if Name = It^.Name then begin
+      Rec := It;
+      Exit(True);
+    end;
+  end;
+
+  Exit(False);
+end;
+
+function CompareCaseInsensitive(Name, NameEnd: PAnsiChar; S: PAnsiChar): Boolean;
+begin
+  while Name < NameEnd do begin
+    if UpCase(Name^) <> UpCase(S^) then
+      Exit(False);
+    Inc(Name);
+    Inc(S);
+  end;
+  Exit(True);
+  // Exit(CompareByte(It^.Name[1], Name^, NameEnd - Name) = 0);
+end;
+
+function TDictionary.Find(Name, NameEnd: PAnsiChar; out Rec: PDictionaryRecord): Boolean;
+var
+  It: PDictionaryRecord;
+begin
+  It := FLast;
+  while It <> nil do begin
+    if (Length(It^.Name) = NameEnd - Name) and CompareCaseInsensitive(Name, NameEnd, PAnsiChar(It^.Name)) then begin
+      Rec := It;
+      Exit(True);
+    end;
+
+    It := It^.Next;
+  end;
+
+  Exit(False);
+end;
+
 function TMachine.Error(const ErrorMsg: AnsiString): Boolean;
 begin
   Writeln(stderr, ErrorMsg);
   Exit(False);
+end;
+
+function f_CR(Machine: PMachine): Boolean;
+begin
+  Writeln;
+  Exit(True);
+end;
+
+function f_Colon(Machine: PMachine): Boolean;
+begin
+  //if not Machine^.IsInterpreting then
+  //  Exit(Machine^.Error('no compile semantic for :'));
+
+  // NameEnd := SkipName(S, SEnd);
+  Machine^.FState := STATE_COMPILE;
+  Exit(True);
+end;
+
+function f_Semicolon(Machine: PMachine): Boolean;
+begin
+  if Machine^.IsInterpreting then
+    Exit(Machine^.Error('no interpreatation semantic for ;'));
+
+  Machine^.FState := STATE_INTERPRETING;
+  Writeln;
+  Exit(True);
+end;
+
+function f_Dot(Machine: PMachine): Boolean;
+begin
+  Write('7 '); // TODO stack
+  Exit(True);
+end;
+
+function f_BYE(Machine: PMachine): Boolean;
+begin
+  Machine^.Bye := True;
+  Exit(True);
 end;
 
 procedure TMachine.Init;
@@ -198,10 +344,6 @@ begin
   FBase := 10;
 
   FDictionary.Init;
-
-  FDictionary.CreateDifinition(':');
-  FDictionary.CreateDifinition(';');
-  FDictionary.CreateDifinition('.');
 end;
 
 procedure TMachine.Done;
@@ -215,9 +357,47 @@ begin
 end;
 {$POP}
 
+procedure TMachine.RegIntrisic(const Name: AnsiString; F: TSemantic; Opcode: Int32);
+var
+  Rec: PDictionaryRecord;
+begin
+  Rec := FDictionary.CreateDifinition(Name);
+  Rec^.Semantic := F;
+  Rec^.Opcode := Opcode;
+end;
+
+procedure TMachine.RegImmediate(const Name: AnsiString; F: TSemantic);
+var
+  Rec: PDictionaryRecord;
+begin
+  Rec := FDictionary.CreateDifinition(Name);
+  Rec^.Semantic := F;
+  Rec^.Immediate := True;
+end;
+
 procedure TMachine.Configurate(Args: PPubForthCLArgs);
 begin
   UNUSED(Args);
+
+  RegIntrisic ('CR', @f_CR, OP_CR);
+  RegIntrisic (':',  @f_Colon, OP_ENTER);
+  RegImmediate(';',  @f_Semicolon);
+  RegIntrisic ('.',  @f_Dot, OP_DOT);
+end;
+
+procedure TMachine.ConfigureREPL;
+begin
+  RegIntrisic ('BYE', @f_BYE, OP_BYE);
+end;
+
+procedure TMachine.Compile(Opcode: Int32);
+begin
+  Writeln(stderr, 'Compiling.. ', Opcode);
+end;
+
+procedure TMachine.CompileCall(Xt: PDictionaryRecord);
+begin
+  Writeln(stderr, 'Compiling.. CALL ', Xt^.Name);
 end;
 
 function TMachine.IsInterpreting: Boolean; inline;
@@ -345,9 +525,23 @@ begin
 
     if FDictionary.Find(S, NameEnd, Definition) then begin
       if IsInterpreting then begin
-        Writeln(stderr, 'INTERPRETATION ', Definition^.Name);
+        if @Definition^.Semantic <> nil then begin
+          Definition^.Semantic(@Self);
+        end else
+          Writeln(stderr, 'ERROR no semantic for ', Definition^.Name);
       end else begin
-        Writeln(stderr, 'COMPILE ', Definition^.Name);
+        if Definition^.Immediate then begin
+          if @Definition^.Semantic <> nil then begin
+            Definition^.Semantic(@Self);
+          end else
+            Writeln(stderr, 'ERROR no semantic for ', Definition^.Name);
+        end else begin
+          if Definition^.Opcode >= 0 then begin
+            Compile(Definition^.Opcode);
+          end else begin
+            CompileCall(Definition);
+          end;
+        end;
       end;
     end else begin
       if ParseAnyNum(S, NameEnd, Number) then begin
@@ -356,8 +550,6 @@ begin
         end else begin
           Writeln(stderr, 'LITERAL ', Number);
         end;
-      end else if EqualsString(S, NameEnd, 'BYE') then begin
-        Bye := True;
       end else begin
         Exit(Error('unrecognized word ' + ToPrintableString(S, NameEnd)));
       end;

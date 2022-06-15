@@ -11,7 +11,6 @@ uses
   //pubforth_core,
   pubforth_words,
   //pubforth_doc_parser,
-  //pubforth_dictionary,
   pubforth_machine,
   pubforth_backend,
   pubforth_backend_dump,
@@ -132,6 +131,11 @@ begin
     Halt(0);
   end;
 
+  if Args.ShortVersion then begin
+    PrintShortVersion;
+    Halt(0);
+  end;
+
   if Args.PrintPlan then begin
     PrintDevelopmentPlan;
     Halt(0);
@@ -217,6 +221,7 @@ begin
   end;
 
   if Args.Repl then begin
+    Machine.ConfigureREPL;
     REPL;
   end;
 
