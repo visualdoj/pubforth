@@ -29,6 +29,7 @@ const
   OP_ENTER        = 4;
   OP_DOT          = 5;
   OP_BYE          = 6;
+  OP_RETURN       = 7;
 
 
 implementation

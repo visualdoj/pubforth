@@ -146,6 +146,11 @@ private
   // FControlFlowStack: PCell; // C: TODO
   // FReturnStack: PCell; // R: TODO
 
+  FCodeArray: array of UInt8;
+  FCodeBegin: PUInt8;
+  FCode: PUInt8; // <- cursor
+  FCodeEnd: PUInt8;
+
   function  Error(const ErrorMsg: AnsiString): Boolean;
   procedure Hint(const HintMsg: AnsiString);
 
@@ -164,8 +169,9 @@ public
   procedure ConfigureREPL;
   procedure ConfigureExperimental;
 
-  procedure Compile(Opcode: Int32);
+  procedure Compile(Opcode: UInt8);
   procedure CompileCall(Xt: PDictionaryRecord);
+  procedure CompileLiteral(Number: TValueN);
 
   function IsInterpreting: Boolean; inline;
 
@@ -248,6 +254,38 @@ implementation
 //
 //  For more information, please refer to <http://unlicense.org/>
 //  ---------------------------------------------------------------------------
+
+function RunVM(Code: PUInt8; Machine: PMachine): Boolean;
+begin
+  while True do begin
+    case Code^ of
+    OP_NOP: ;
+    OP_LITERAL: begin
+                  Machine^.FStackCell := Pointer(Pointer(Code + 1)^);
+                  Inc(Code, 1 + SizeOf(TValueN));
+                  continue;
+                end;
+    OP_CR: Writeln;
+    OP_CALL: begin
+               Writeln('TODO call ', PDictionaryRecord(Pointer(Code + 1)^)^.Name);
+               Inc(Code, 1 + SizeOf(PDictionaryRecord));
+               continue;
+             end;
+    OP_ENTER: Exit(Machine^.Error('OP_ENTER is not ready'));
+    OP_DOT: Write(TValueN(Machine^.FStackCell), ' ');
+    OP_BYE: begin
+              Machine^.Bye := True;
+              Exit(True);
+            end;
+    OP_RETURN: Exit(True);
+    else
+      Exit(Machine^.Error('code is invalid'));
+    end;
+    Inc(Code);
+  end;
+
+  Exit(False); // must be unreachable
+end;
 
 function IsGraphicCharacter(C: TValueChar): Boolean; inline;
 begin
@@ -384,6 +422,8 @@ begin
   if Machine^.IsInterpreting then
     Exit(Machine^.Error('no interpreatation semantic for ;'));
 
+  Machine^.Compile(OP_RETURN);
+
   Machine^.FState := STATE_INTERPRETING;
   Writeln('Generated ', Machine^.FDictionary.FLast^.Name);
   Exit(True);
@@ -447,6 +487,12 @@ begin
   FState := 0;
   FBase := 10;
 
+  // TODO be more adaptive: allow expanding code size
+  SetLength(FCodeArray, 4 * 1024);
+  FCodeBegin := @FCodeArray[0];
+  FCode := FCodeBegin;
+  FCodeEnd := FCodeBegin + Length(FCodeArray);
+
   FDictionary.Init;
 end;
 
@@ -500,14 +546,24 @@ begin
   RegIntrinsic('.',   @f_Dot, OP_DOT);
 end;
 
-procedure TMachine.Compile(Opcode: Int32);
+procedure TMachine.Compile(Opcode: UInt8);
 begin
-  Writeln(stderr, 'Compiling.. ', Opcode);
+  FCode^ := Opcode;
+  Inc(FCode);
 end;
 
 procedure TMachine.CompileCall(Xt: PDictionaryRecord);
 begin
-  Writeln(stderr, 'Compiling.. CALL ', Xt^.Name);
+  Compile(OP_CALL);
+  Move(Xt, Pointer(FCode)^, SizeOf(PDictionaryRecord));
+  Inc(FCode, SizeOf(PDictionaryRecord));
+end;
+
+procedure TMachine.CompileLiteral(Number: TValueN);
+begin
+  Compile(OP_LITERAL);
+  Move(Number, Pointer(FCode)^, SizeOf(TValueN));
+  Inc(FCode, SizeOf(TValueN));
 end;
 
 function TMachine.IsInterpreting: Boolean; inline;
@@ -784,7 +840,7 @@ begin
         if IsInterpreting then begin
           FStackCell := Pointer(Number);
         end else begin
-          Writeln(stderr, 'LITERAL ', Number);
+          CompileLiteral(Number);
         end;
       end else begin
         UnrecognizedWord(S, NameEnd);
