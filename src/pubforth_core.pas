@@ -30,6 +30,7 @@ const
   OP_DOT          = 5;
   OP_BYE          = 6;
   OP_RETURN       = 7;
+  OP_WORDS        = 8;
 
 
 implementation

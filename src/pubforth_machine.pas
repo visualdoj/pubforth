@@ -435,6 +435,19 @@ begin
   Exit(True);
 end;
 
+function f_Words(Machine: PMachine): Boolean;
+var
+  Rec: PDictionaryRecord;
+begin
+  Rec := Machine^.FDictionary.FLast;
+  while Rec <> nil do begin
+    // TODO do we print names of unfinished words?
+    Writeln(Rec^.Name);
+    Rec := Rec^.Next;
+  end;
+  Exit(True);
+end;
+
 function f_BYE(Machine: PMachine): Boolean;
 begin
   Machine^.Bye := True;
@@ -538,12 +551,13 @@ end;
 
 procedure TMachine.ConfigureExperimental;
 begin
-  RegImmediate('\',   @f_SingleLineComment);
-  RegImmediate('(',   @f_MultiLineComment);
-  RegIntrinsic('CR',  @f_CR, OP_CR);
-  RegIntrinsic(':',   @f_Colon, OP_ENTER);
-  RegImmediate(';',   @f_Semicolon);
-  RegIntrinsic('.',   @f_Dot, OP_DOT);
+  RegImmediate('\',       @f_SingleLineComment);
+  RegImmediate('(',       @f_MultiLineComment);
+  RegIntrinsic('CR',      @f_CR, OP_CR);
+  RegIntrinsic(':',       @f_Colon, OP_ENTER);
+  RegImmediate(';',       @f_Semicolon);
+  RegIntrinsic('.',       @f_Dot, OP_DOT);
+  RegIntrinsic('WORDS',   @f_Words, OP_WORDS);
 end;
 
 procedure TMachine.Compile(Opcode: UInt8);
