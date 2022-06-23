@@ -227,7 +227,7 @@ begin
   // TODO check if Exe is absolute or started with ./
   for I := 1 to Length(Exe) do begin
     if (Exe[I] = '/') or (Exe[I] = '\') then begin
-      Exit('./' + TestDir + '/' + Exe);
+      Exit(ExpandFileName('./' + TestDir + '/' + Exe));
     end;
   end;
   Exit(Exe);
