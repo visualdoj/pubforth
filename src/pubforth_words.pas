@@ -136,7 +136,7 @@ STATIC_WORDS_ARRAY: array[0 .. 480 - 1] of TWordInfo = (
 
   (N: '[Initial repository, build, test](docs/news/initial.md)';         E: nil; T: 1655177154; F: FLAG_PUBFORTH_MILESTONE),
   (N: '[GitHub workflow](docs/news/workflow.md)';                        E: nil; T: 1655325933; F: FLAG_PUBFORTH_MILESTONE),
-  (N: '`PubForth 0.0.0`: Zero-day release with effectively no words supported';     E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
+  (N: '[PubForth 0.0.0: Zero-day release with effectively no words supported](https://github.com/visualdoj/pubforth/releases/tag/v0.0.0)';     E: nil; T: 1655965970; F: FLAG_PUBFORTH_MILESTONE),
 
   (N: ':';                  E: 'colon';               T: 0; F: FLAG_FORTH2012_CORE),
   (N: ';';                  E: 'semicolon';           T: 0; F: FLAG_FORTH2012_CORE),
