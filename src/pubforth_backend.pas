@@ -26,6 +26,7 @@ TTranslationTask = record
   TargetOS: AnsiString; // windows or linux
   TargetCPU: AnsiString; // x86 x86_64 arm32 arm64
   OptimizationLevel: Int32;   // 0 - no optimization
+  Include: AnsiString; // INCLUDE env for FASM
   OutputFileName: AnsiString;
   BinaryFileName: AnsiString; // executable or library
   procedure InitDefaults;

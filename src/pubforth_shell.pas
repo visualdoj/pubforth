@@ -1,9 +1,9 @@
-unit pubforth_backend_pascal;
+unit pubforth_shell;
 // Author:  Doj
 // License: Public domain or MIT
 
 //
-//  Backend for producing Pascal Code.
+// Executing shell commands.
 //
 
 {$MODE FPC}
@@ -14,10 +14,10 @@ unit pubforth_backend_pascal;
 interface
 
 uses
-  pubforth_backend,
-  pubforth_shell;
+  process,
+  tp_env;
 
-
+function ExecuteShell(Cmd: PPAnsiChar): Boolean;
 
 
 implementation
@@ -73,61 +73,112 @@ implementation
 //  For more information, please refer to <http://unlicense.org/>
 //  ---------------------------------------------------------------------------
 
-type
-TBackendPascal = object(TBackend)
-public
-  constructor Init;
-  destructor Done; virtual;
-
-  function  Translate(Task: PTranslationTask): Boolean; virtual;
-  function  Compile(Task: PTranslationTask): Boolean;
-end;
-
+function ExecuteSingleProcess(Cmd, CmdEnd: PPAnsiChar; Env: PEnv): Boolean;
 var
-  BackendPascal: TBackendPascal;
-
-constructor TBackendPascal.Init;
+  Process: TProcess;
+  Buffer: array[0 .. 4 * 1024] of AnsiChar;
+  ReadSize, ReadCount: SizeUInt;
 begin
-  inherited Init;
-end;
+  if Cmd >= CmdEnd then
+    Exit(True); // NOP
 
-destructor TBackendPascal.Done;
-begin
-  inherited Done;
-end;
+  Process := TProcess.Create(nil);
+  Process.Options := [poUsePipes];
+  Process.Executable := Cmd^;
+  Write('$ ', Cmd^);
 
-function  TBackendPascal.Translate(Task: PTranslationTask): Boolean;
-begin
-  OpenTextFile(Task^.OutputFileName);
-  WriteLine('begin');
-  WriteLine('end.');
-  CloseTextFile;
+  Inc(Cmd);
+  while Cmd < CmdEnd do begin
+    Write(' ', Cmd^);
+    Process.Parameters.Add(Cmd^);
+    Inc(Cmd);
+  end;
+  Writeln;
 
-  if Task^.BinaryFileName <> '' then begin
-    if not Compile(Task) then
-      Exit(False);
+  if Env <> nil then begin
+    OverrideEnv(Process, Env);
   end;
 
-  Exit(True);
+  Process.Execute;
+
+  while Process.Running or (Process.Output.NumBytesAvailable > 0) or (Process.Stderr.NumBytesAvailable > 0) do begin
+    if Process.Output.NumBytesAvailable > 0 then begin
+      ReadSize := Process.Output.NumBytesAvailable;
+      if ReadSize > Length(Buffer) - 1 then
+        ReadSize := Length(Buffer) - 1;
+      ReadCount := Process.Output.Read(Buffer[0], ReadSize);
+      Buffer[ReadCount] := #0;
+      Write(PAnsiChar(@Buffer[0]));
+    end;
+
+    if Process.Stderr.NumBytesAvailable > 0 then begin
+      ReadSize := Process.Stderr.NumBytesAvailable;
+      if ReadSize > Length(Buffer) - 1 then
+        ReadSize := Length(Buffer) - 1;
+      ReadCount := Process.Stderr.Read(Buffer[0], ReadSize);
+      Buffer[ReadCount] := #0;
+      Write(stderr, PAnsiChar(@Buffer[0]));
+    end;
+  end;
+
+  Result := Process.ExitCode <> 0;
+
+  Process.Free;
 end;
 
-function  TBackendPascal.Compile(Task: PTranslationTask): Boolean;
-var
-  Cmd: array of PAnsiChar;
+function ExecutePipe(Pipe, PipeEnd: PPAnsiChar; Env: PEnv): Boolean;
 begin
-  Writeln('Compiling');
-  SetLength(Cmd, 4);
-  Cmd[0] := 'fpc';
-  Cmd[1] := PAnsiChar(Task^.OutputFileName);
-  Cmd[2] := '-FE.'; // TODO temp directory
-  Cmd[3] := nil;
-
-  Result := ExecuteShell(@Cmd[0]);
+  // TODO actual pipe
+  Exit(ExecuteSingleProcess(Pipe, PipeEnd, Env));
 end;
 
-initialization
-  BackendPascal.Init;
-  RegisterBackend('pascal', @BackendPascal, '.pas');
-finalization
-  BackendPascal.Done;
+function ExecuteShell(Cmd: PPAnsiChar): Boolean;
+var
+  Env: TEnv;
+  LastSuccess: Boolean;
+  CmdEnd: PPAnsiChar;
+  EnvMode: Boolean;
+begin
+  Env.Init;
+
+  LastSuccess := True;
+
+  EnvMode := True;
+  CmdEnd := Cmd;
+  while CmdEnd^ <> nil do begin
+    if EnvMode and (AnsiString(CmdEnd^) = 'set') then begin
+      Env.Add(Cmd[1], Cmd[2]);
+      Inc(Cmd, 3);
+      CmdEnd := Cmd;
+      continue;
+    end;
+
+    EnvMode := False;
+
+    if AnsiString(CmdEnd^) = '&&' then begin
+      if LastSuccess then
+        LastSuccess := ExecutePipe(Cmd, CmdEnd, @Env);
+      Cmd := CmdEnd + 1;
+      CmdEnd := Cmd;
+      continue;
+    end;
+
+    if AnsiString(CmdEnd^) = '||' then begin
+      if not LastSuccess then
+        LastSuccess := ExecutePipe(Cmd, CmdEnd, @Env);
+      Cmd := CmdEnd + 1;
+      CmdEnd := Cmd;
+      continue;
+    end;
+
+    Inc(CmdEnd);
+  end;
+
+  if LastSuccess then
+    LastSuccess := ExecutePipe(Cmd, CmdEnd, @Env);
+
+  Env.Done;
+  Exit(LastSuccess);
+end;
+
 end.

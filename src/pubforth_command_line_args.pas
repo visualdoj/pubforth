@@ -5,40 +5,9 @@ unit pubforth_command_line_args;
 //
 //  Parser for command line arguments.
 //
-//  Examples:
+//  Run the following command for getting command line documentation:
 //
-//      pubforth  -h
-//      pubforth  --help
-//
-//          Prints help and exits.
-//
-//
-//      pubforth  -v
-//      pubforth  --version
-//
-//          Prints program version and exit.
-//
-//      pubforth  --print-plan
-//
-//          Prints development plan.
-//
-//      pubforth  --patch-readme README.md
-//
-//          Updates plan in the README.md.
-//
-//      pubforth --print-std-list
-//
-//        Prints all supported standards.
-//
-//  Options:
-//
-//      --experimental
-//
-//        Enables all words with experimental status.
-//
-//      --std <STANDARD>
-//
-//        Specifies standard.
+//    pubforth --long-help
 //
 
 {$MODE FPC}
@@ -53,6 +22,11 @@ uses
   pubforth_core;
 
 type
+TPubForthInputArg = record
+  _Type: Int32; // 0 - filename, 1 - code
+  S: AnsiString;
+end;
+
 PPubForthCLArgs = ^TPubForthCLArgs;
 TPubForthCLArgs = object
   ErrorMsg: AnsiString;
@@ -65,16 +39,17 @@ TPubForthCLArgs = object
   PatchReadme: Boolean;
   PrintStdList: Boolean;
   PrintBackendsList: Boolean;
-  FreeArgs: array of AnsiString;
   Experimental: Boolean;
   Std: AnsiString;
   Repl: Boolean;
   NoRepl: Boolean;
   Backend: AnsiString;
+  BackendInclude: AnsiString;
   OutputFileName: AnsiString;
   Main: AnsiString;
   OS: AnsiString;
   CPU: AnsiString;
+  InputArgs: array of TPubForthInputArg;
   procedure Init;
   procedure Done;
   procedure SetDefaults;
@@ -167,6 +142,7 @@ begin
   PrintBackendsList := False;
   Experimental := False;
   Backend := '';
+  BackendInclude := '';
   OutputFileName := '';
   Main := '';
   OS := '';
@@ -174,7 +150,7 @@ begin
   Std := 'forth2012';
   Repl := False;
   NoRepl := False;
-  SetLength(FreeArgs, 0);
+  SetLength(InputArgs, 0);
 end;
 
 function TPubForthCLArgs.ParseParamStrings: Boolean;
@@ -215,6 +191,13 @@ begin
         Exit(False);
       end;
       Backend := ParamStr(I);
+    end else if ParamStr(I) = '--backend-include' then begin
+      Inc(I);
+      if I > ParamCount then begin
+        ErrorMsg := ParamStr(I - 1) + ' needs an argument';
+        Exit(False);
+      end;
+      BackendInclude := ParamStr(I);
     end else if (ParamStr(I) = '-o') or (ParamStr(I) = '--output') then begin
       Inc(I);
       if I > ParamCount then begin
@@ -222,6 +205,15 @@ begin
         Exit(False);
       end;
       OutputFileName := ParamStr(I);
+    end else if (ParamStr(I) = '-e') or (ParamStr(I) = '--evaluate') then begin
+      Inc(I);
+      if I > ParamCount then begin
+        ErrorMsg := ParamStr(I - 1) + ' needs an argument';
+        Exit(False);
+      end;
+      SetLength(InputArgs, Length(InputArgs) + 1);
+      InputArgs[High(InputArgs)]._Type := 1;
+      InputArgs[High(InputArgs)].S := ParamStr(I);
     end else if ParamStr(I) = '--main' then begin
       Inc(I);
       if I > ParamCount then begin
@@ -256,8 +248,9 @@ begin
         Exit(False);
       end;
 
-      SetLength(FreeArgs, Length(FreeArgs) + 1);
-      FreeArgs[High(FreeArgs)] := ParamStr(I);
+      SetLength(InputArgs, Length(InputArgs) + 1);
+      InputArgs[High(InputArgs)]._Type := 0;
+      InputArgs[High(InputArgs)].S := ParamStr(I);
     end;
 
     Inc(I);
@@ -370,17 +363,21 @@ begin
   A('  pubforth --print-plan');
   L('     Prints the development plan');
   L('');
+  A('  pubforth -e|--evaluate <STRING>');
+  L('     Evaluate the specified STRING');
+  L('');
   A('  pubforth -o|--output <FILENAME>');
   L('     Generate backend code and save it to the specified filename');
   A('');
   A('Options:');
-  A('  --experimental');
-  L('');
   A('  --std <STANDARD>');
   L('     Use the specified standard. Default: forth2012');
   L('');
   A('  --backend <BACKEND>');
   L('     Use the specified backend. By default will try detect backend by output file extension');
+  L('');
+  L('  --backend-include <DIRECTORY>');
+  L('     For FASM backend: sets INCLUDE environment variable');
   L('');
   A('  --main <WORDNAME>');
   L('     Use the specified word as a program entry point. Default: MAIN');

@@ -256,7 +256,7 @@ begin
 {$IF Defined(UNIX)}
   Write(#27'[1;31m');
 {$ELSEIF Defined(WINDOWS)}
-  windows.SetConsoleTextAttribute(HandleStdOut, windows.FOREGROUND_RED);
+  windows.SetConsoleTextAttribute(HandleStdOut, windows.FOREGROUND_RED or FOREGROUND_INTENSITY);
 {$ENDIF}
 end;
 
@@ -267,7 +267,7 @@ begin
 {$IF Defined(UNIX)}
   Write(#27'[1;33m');
 {$ELSEIF Defined(WINDOWS)}
-  windows.SetConsoleTextAttribute(HandleStdOut, windows.FOREGROUND_RED or windows.FOREGROUND_GREEN);
+  windows.SetConsoleTextAttribute(HandleStdOut, windows.FOREGROUND_RED or windows.FOREGROUND_GREEN or FOREGROUND_INTENSITY);
 {$ENDIF}
 end;
 
@@ -278,7 +278,7 @@ begin
 {$IF Defined(UNIX)}
   Write(#27'[1;32m');
 {$ELSEIF Defined(WINDOWS)}
-  windows.SetConsoleTextAttribute(HandleStdOut, windows.FOREGROUND_GREEN);
+  windows.SetConsoleTextAttribute(HandleStdOut, windows.FOREGROUND_GREEN or FOREGROUND_INTENSITY);
 {$ENDIF}
 end;
 
@@ -289,7 +289,7 @@ begin
 {$IF Defined(UNIX)}
   Write(#27'[1;34m');
 {$ELSEIF Defined(WINDOWS)}
-  windows.SetConsoleTextAttribute(HandleStdOut, windows.FOREGROUND_BLUE);
+  windows.SetConsoleTextAttribute(HandleStdOut, windows.FOREGROUND_BLUE or FOREGROUND_INTENSITY);
 {$ENDIF}
 end;
 

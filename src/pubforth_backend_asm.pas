@@ -14,7 +14,8 @@ unit pubforth_backend_asm;
 interface
 
 uses
-  pubforth_backend;
+  pubforth_backend,
+  pubforth_shell;
 
 
 
@@ -79,6 +80,7 @@ public
   destructor Done; virtual;
 
   function  Translate(Task: PTranslationTask): Boolean; virtual;
+  function  Compile(Task: PTranslationTask): Boolean;
 end;
 
 var
@@ -159,7 +161,46 @@ begin
   end;
 
   CloseTextFile;
+
+  if Task^.BinaryFileName <> '' then begin
+    if not Compile(Task) then
+      Exit(False);
+  end;
+
   Exit(True);
+end;
+
+function  TBackendAsm.Compile(Task: PTranslationTask): Boolean;
+var
+  CmdS: array of AnsiString;
+  Cmd: array of PAnsiChar;
+
+  procedure AddCmd(const S: AnsiString);
+  begin
+    SetLength(CmdS, Length(CmdS) + 1);
+    SetLength(Cmd, Length(Cmd) + 1);
+    CmdS[High(CmdS)] := S;
+    if S = '' then begin
+      Cmd[High(Cmd)] := nil;
+    end else
+      Cmd[High(Cmd)] := PAnsiChar(CmdS[High(CmdS)]);
+  end;
+begin
+  SetLength(CmdS, 0);
+  SetLength(Cmd, 0);
+
+  if Task^.Include <> '' then begin
+    AddCmd('set');
+    AddCmd('INCLUDE');
+    AddCmd(Task^.Include);
+  end;
+
+  AddCmd('fasm');
+  AddCmd(Task^.OutputFileName);
+  AddCmd(Task^.BinaryFileName);
+  AddCmd('');
+
+  Result := ExecuteShell(@Cmd[0]);
 end;
 
 initialization

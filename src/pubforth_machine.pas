@@ -10,9 +10,12 @@ unit pubforth_machine;
 interface
 
 uses
+  dterm,
   dfilereader,
   pubforth_core,
-  pubforth_command_line_args;
+  pubforth_command_line_args,
+  pubforth_strings,
+  pubforth_words;
 
 type
 TInputSourceSpecification = record
@@ -127,12 +130,20 @@ private
   FState: PtrInt;
   FDictionary: TDictionary;
 
+  // Current input source
+  FSourceBegin: PAnsiChar;
+  FSource: PAnsiChar;     // <- cursor
+  FSourceEnd: PAnsiChar;
+
+  // Stack
+
   FBase: PtrInt;
   // FStack: PCell; // S: TODO data stack
   // FControlFlowStack: PCell; // C: TODO
   // FReturnStack: PCell; // R: TODO
 
-  function Error(const ErrorMsg: AnsiString): Boolean;
+  function  Error(const ErrorMsg: AnsiString): Boolean;
+  procedure Hint(const HintMsg: AnsiString);
 
 public
   Bye: Boolean; // for signaling
@@ -140,13 +151,14 @@ public
   procedure Init;
   procedure Done;
 
-  procedure RegIntrisic(const Name: AnsiString; F: TSemantic; Opcode: Int32);
+  procedure RegIntrinsic(const Name: AnsiString; F: TSemantic; Opcode: Int32);
   procedure RegImmediate(const Name: AnsiString; F: TSemantic);
 
   procedure Configurate(Args: PPubForthCLArgs);
       // Should be called after Init.
 
   procedure ConfigureREPL;
+  procedure ConfigureExperimental;
 
   procedure Compile(Opcode: Int32);
   procedure CompileCall(Xt: PDictionaryRecord);
@@ -154,10 +166,23 @@ public
   function IsInterpreting: Boolean; inline;
 
   function ParseAnyNum(S, SEnd: PAnsiChar; out Num: TValueN): Boolean; inline;
+      // <anynum>   :=  { <BASEnum> | <decnum> | <hexnum> | <binnum> | <cnum> }
+      // <BASEnum>  :=  [-]<bdigit><bdigit>*
+      // <decnum>   :=  #[-]<decdigit><decdigit>*
+      // <hexnum>   :=  $[-]<hexdigit><hexdigit>*
+      // <binnum>   :=  %[-]<bindigit><bindigit>*
+      // <cnum>     :=  '<char>'
+      // <bindigit> :=  { 0 | 1 }
+      // <decdigit> :=  { 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 }
+      // <hexdigit> :=  { <decdigit> | a | b | c | d | e | f | A | B | C | D | E | F }
+
   function Interpret(S, SEnd: PAnsiChar): Boolean;
 
   function InterpretREPLInput(const Line: AnsiString): Boolean;
+  function InterpretString(const S: AnsiString): Boolean;
   function InterpretFile(const FileName: AnsiString): Boolean;
+
+  function UnrecognizedWord(S, SEnd: PAnsiChar): Boolean;
 end;
 
 function IsGraphicCharacter(C: TValueChar): Boolean; inline;
@@ -264,25 +289,13 @@ begin
   Exit(False);
 end;
 
-function CompareCaseInsensitive(Name, NameEnd: PAnsiChar; S: PAnsiChar): Boolean;
-begin
-  while Name < NameEnd do begin
-    if UpCase(Name^) <> UpCase(S^) then
-      Exit(False);
-    Inc(Name);
-    Inc(S);
-  end;
-  Exit(True);
-  // Exit(CompareByte(It^.Name[1], Name^, NameEnd - Name) = 0);
-end;
-
 function TDictionary.Find(Name, NameEnd: PAnsiChar; out Rec: PDictionaryRecord): Boolean;
 var
   It: PDictionaryRecord;
 begin
   It := FLast;
   while It <> nil do begin
-    if (Length(It^.Name) = NameEnd - Name) and CompareCaseInsensitive(Name, NameEnd, PAnsiChar(It^.Name)) then begin
+    if (Length(It^.Name) = NameEnd - Name) and EqualsCaseInsensitive(Name, NameEnd, PAnsiChar(It^.Name)) then begin
       Rec := It;
       Exit(True);
     end;
@@ -295,8 +308,17 @@ end;
 
 function TMachine.Error(const ErrorMsg: AnsiString): Boolean;
 begin
-  Writeln(stderr, ErrorMsg);
+  SetTerminalColor(TERMINAL_COLOR_BRIGHT_RED);
+  Writeln(stderr, 'Error: ' + ErrorMsg);
+  SetTerminalColor(TERMINAL_COLOR_DEFAULT);
   Exit(False);
+end;
+
+procedure TMachine.Hint(const HintMsg: AnsiString);
+begin
+  SetTerminalColor(TERMINAL_COLOR_BRIGHT_BLUE);
+  Writeln(stderr, 'Hint: ' + HintMsg);
+  SetTerminalColor(TERMINAL_COLOR_DEFAULT);
 end;
 
 function f_CR(Machine: PMachine): Boolean;
@@ -357,7 +379,7 @@ begin
 end;
 {$POP}
 
-procedure TMachine.RegIntrisic(const Name: AnsiString; F: TSemantic; Opcode: Int32);
+procedure TMachine.RegIntrinsic(const Name: AnsiString; F: TSemantic; Opcode: Int32);
 var
   Rec: PDictionaryRecord;
 begin
@@ -379,15 +401,19 @@ procedure TMachine.Configurate(Args: PPubForthCLArgs);
 begin
   UNUSED(Args);
 
-  RegIntrisic ('CR', @f_CR, OP_CR);
-  RegIntrisic (':',  @f_Colon, OP_ENTER);
-  RegImmediate(';',  @f_Semicolon);
-  RegIntrisic ('.',  @f_Dot, OP_DOT);
+  RegIntrinsic('BYE', @f_BYE, OP_BYE);
 end;
 
 procedure TMachine.ConfigureREPL;
 begin
-  RegIntrisic ('BYE', @f_BYE, OP_BYE);
+end;
+
+procedure TMachine.ConfigureExperimental;
+begin
+  RegIntrinsic('CR',  @f_CR, OP_CR);
+  RegIntrinsic(':',   @f_Colon, OP_ENTER);
+  RegImmediate(';',   @f_Semicolon);
+  RegIntrinsic('.',   @f_Dot, OP_DOT);
 end;
 
 procedure TMachine.Compile(Opcode: Int32);
@@ -407,7 +433,7 @@ end;
 
 function SkipSpaces(S, SEnd: PAnsiChar): PAnsiChar; inline;
 begin
-  while (S < SEnd) and (S^ = ' ') do
+  while (S < SEnd) and (S^ in [' ', #13, #10, #9]) do
     Inc(S);
 
   Exit(S);
@@ -432,12 +458,40 @@ begin
 end;
 
 function ParseDecimalNumber(S, SEnd: PAnsiChar; out Value: TValueN): Boolean; inline;
+label
+  LSuccess;
+var
+  MinusSign: Boolean;
 begin
-  UNUSED(@S);
-  UNUSED(@SEnd);
-  UNUSED(@Value);
-  Writeln('TODO ParseDecimalNumber');
-  Exit(False);
+  if S >= SEnd then
+    Exit(False);
+
+  if S^ = '-' then begin
+    MinusSign := True;
+    Inc(S);
+    if S >= SEnd then
+      Exit(False);
+  end else
+    MinusSign := False;
+
+  Value := 0;
+  while S < SEnd do begin
+    if S^ in [' ', #9, #10, #13] then
+      goto LSuccess;
+
+    if not (S^ in ['0'..'9']) then
+      Exit(False);
+
+    Value := Value * 10 + Ord(S^) - Ord('0');
+
+    Inc(S);
+  end;
+
+LSuccess:
+  if MinusSign then
+    Value := - Value;
+
+  Exit(True);
 end;
 
 function ParseHexNumber(S, SEnd: PAnsiChar; out Value: TValueN): Boolean; inline;
@@ -507,7 +561,13 @@ begin
           Exit(True);
         end;
   else
-    Exit(ParseBaseNumber(S, SEnd, FBase, Num)); // <BASEnum>
+    case FBase of
+     2: Exit(ParseHexNumber(S, SEnd, Num));
+    10: Exit(ParseDecimalNumber(S, SEnd, Num));
+    16: Exit(ParseHexNumber(S, SEnd, Num));
+    else
+      Exit(ParseBaseNumber(S, SEnd, FBase, Num)); // <BASEnum>
+    end;
   end;
 
   Exit(False); // make compiler happy
@@ -519,9 +579,14 @@ var
   Definition: PDictionaryRecord;
   Number: TValueN;
 begin
+  FSourceBegin := S;
+  FSource := S;
+  FSourceEnd := SEnd;
+
   S := SkipSpaces(S, SEnd);
   while S < SEnd do begin
     NameEnd := SkipName(S, SEnd);
+    FSource := NameEnd + 1;
 
     if FDictionary.Find(S, NameEnd, Definition) then begin
       if IsInterpreting then begin
@@ -551,11 +616,13 @@ begin
           Writeln(stderr, 'LITERAL ', Number);
         end;
       end else begin
-        Exit(Error('unrecognized word ' + ToPrintableString(S, NameEnd)));
+        UnrecognizedWord(S, NameEnd);
+        S := SkipSpaces(FSource, SEnd);
+        Exit(False);
       end;
     end;
 
-    S := SkipSpaces(NameEnd, SEnd);
+    S := SkipSpaces(FSource, SEnd);
   end;
 
   Exit(True);
@@ -564,6 +631,11 @@ end;
 function TMachine.InterpretREPLInput(const Line: AnsiString): Boolean;
 begin
   Exit(Interpret(@Line[1], @Line[1] + Length(Line)));
+end;
+
+function TMachine.InterpretString(const S: AnsiString): Boolean;
+begin
+  Exit(Interpret(@S[1], @S[1] + Length(S)));
 end;
 
 function TMachine.InterpretFile(const FileName: AnsiString): Boolean;
@@ -577,6 +649,18 @@ begin
   Result := Interpret(Content, Content + ContentLen);
 
   FreeMem(Content);
+
+  Exit(True);
+end;
+
+function TMachine.UnrecognizedWord(S, SEnd: PAnsiChar): Boolean;
+var
+  Date: AnsiString;
+begin
+  Error('unrecognized word ' + ToPrintableString(S, SEnd));
+  if IsForth2012Plan(S, SEnd, Date) then
+    Hint('it is planned to be implemented on (approximately) ' + Date);
+  Exit(False);
 end;
 
 end.

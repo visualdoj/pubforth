@@ -5,8 +5,12 @@ bin/pubforth --help
 bin/pubforth --long-help
 bin/pubforth --version
 
+# BYE should always be available
+bin/pubforth -e bye -e foobar
+
 # Test backends
-bin/pubforth hello.fs -o hello.fs.dump
-bin/pubforth hello.fs -o hello.fs.pas
-bin/pubforth hello.fs -o hello.fs.c
-bin/pubforth hello.fs -o hello.fs.fasm
+TESTNAME=hello.dump     cd test/hello && ../../bin/pubforth hello.fs -o hello.dump
+TESTNAME=hello.pas      cd test/hello && ../../bin/pubforth hello.fs -o hello.pas
+TESTNAME=hello.c        cd test/hello && ../../bin/pubforth hello.fs -o hello.c
+TESTNAME=hello.win.fasm cd test/hello && ../../bin/pubforth hello.fs --os windows -o hello.win.fasm
+TESTNAME=hello.lin.fasm cd test/hello && ../../bin/pubforth hello.fs --os linux   -o hello.lin.fasm

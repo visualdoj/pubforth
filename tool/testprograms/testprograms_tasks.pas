@@ -49,6 +49,7 @@ TTask = record
   StdoutFileName: AnsiString; // path to stdout
   StderrFileName: AnsiString; // path to stderr
   DiffFileName: AnsiString; // path to diff
+  ActualOutputFileName: AnsiString; // actual output for comparing with CanFileName
   ResultFileName: AnsiString;
   Regression: Boolean;
   TimedOut: Boolean;
@@ -230,7 +231,7 @@ begin
   Task^.CmdEscaped := '';
   TestDir := Task^.Env.TESTDIR;
   if TestDir <> '' then begin
-    Task^.CmdFull := TestDir + '/';
+    Task^.CmdFull := 'cd ' + TestDir + ' && ';
   end;
   for I := 0 to High(Command^.Atoms) do begin
     if I > 0 then
@@ -249,6 +250,10 @@ begin
   Task^.DiffFileName := TestProgramsParams.ArtifactsDir + Task^.TestName + '.diff';
   Task^.ResultFileName := TestProgramsParams.ArtifactsDir + Task^.TestName + '.res';
   Task^.CanFileName := Task^.Env.TESTDIR + '/' + Task^.TestName + '.can';
+  if Task^.Env.TESTNAME <> '' then begin
+    Task^.ActualOutputFileName := Task^.Env.TESTDIR + '/' + Task^.TestName;
+  end else
+    Task^.ActualOutputFileName := Task^.StdoutFileName;
   if not FileExists(Task^.CanFileName) then begin
     Task^.CanFileName := '';
   end;

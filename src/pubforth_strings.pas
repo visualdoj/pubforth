@@ -1,9 +1,9 @@
-unit pubforth_backend_pascal;
+unit pubforth_strings;
 // Author:  Doj
 // License: Public domain or MIT
 
 //
-//  Backend for producing Pascal Code.
+//  Misc strings utils
 //
 
 {$MODE FPC}
@@ -13,9 +13,7 @@ unit pubforth_backend_pascal;
 
 interface
 
-uses
-  pubforth_backend,
-  pubforth_shell;
+function EqualsCaseInsensitive(Name, NameEnd: PAnsiChar; S: PAnsiChar): Boolean;
 
 
 
@@ -73,61 +71,18 @@ implementation
 //  For more information, please refer to <http://unlicense.org/>
 //  ---------------------------------------------------------------------------
 
-type
-TBackendPascal = object(TBackend)
-public
-  constructor Init;
-  destructor Done; virtual;
-
-  function  Translate(Task: PTranslationTask): Boolean; virtual;
-  function  Compile(Task: PTranslationTask): Boolean;
-end;
-
-var
-  BackendPascal: TBackendPascal;
-
-constructor TBackendPascal.Init;
+function EqualsCaseInsensitive(Name, NameEnd: PAnsiChar; S: PAnsiChar): Boolean;
 begin
-  inherited Init;
-end;
-
-destructor TBackendPascal.Done;
-begin
-  inherited Done;
-end;
-
-function  TBackendPascal.Translate(Task: PTranslationTask): Boolean;
-begin
-  OpenTextFile(Task^.OutputFileName);
-  WriteLine('begin');
-  WriteLine('end.');
-  CloseTextFile;
-
-  if Task^.BinaryFileName <> '' then begin
-    if not Compile(Task) then
+  while Name < NameEnd do begin
+    if S^ = #0 then
       Exit(False);
+    if UpCase(Name^) <> UpCase(S^) then
+      Exit(False);
+    Inc(Name);
+    Inc(S);
   end;
-
-  Exit(True);
+  Exit(S^ = #0);
+  // Exit(CompareByte(It^.Name[1], Name^, NameEnd - Name) = 0);
 end;
 
-function  TBackendPascal.Compile(Task: PTranslationTask): Boolean;
-var
-  Cmd: array of PAnsiChar;
-begin
-  Writeln('Compiling');
-  SetLength(Cmd, 4);
-  Cmd[0] := 'fpc';
-  Cmd[1] := PAnsiChar(Task^.OutputFileName);
-  Cmd[2] := '-FE.'; // TODO temp directory
-  Cmd[3] := nil;
-
-  Result := ExecuteShell(@Cmd[0]);
-end;
-
-initialization
-  BackendPascal.Init;
-  RegisterBackend('pascal', @BackendPascal, '.pas');
-finalization
-  BackendPascal.Done;
 end.

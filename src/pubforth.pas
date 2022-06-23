@@ -86,12 +86,15 @@ var
   BackendName: AnsiString;
   Backend: PBackend;
   TranslationTask: TTranslationTask;
+  I: Int32;
 
 procedure REPL;
 var
   Line: AnsiString;
 begin
-  Writeln('Type BYE to exit from the REPL mode');
+  if Machine.Bye then
+    Exit;
+  Writeln('Type BYE to exit the REPL');
   while not Machine.Bye do begin
     Write('> ');
     Readln(Line);
@@ -142,12 +145,12 @@ begin
   end;
 
   if Args.PatchReadme then begin
-    if Length(Args.FreeArgs) = 0 then begin
+    if Length(Args.InputArgs) = 0 then begin
       PrintError('no filename provided');
       Halt(1);
     end;
-    if not PatchReadmeFile(Args.FreeArgs[0]) then begin
-      PrintError('Failed patching ' + Args.FreeArgs[0]);
+    if not PatchReadmeFile(Args.InputArgs[0].S) then begin
+      PrintError('Failed patching ' + Args.InputArgs[0].S);
       Halt(1);
     end;
     Halt(0);
@@ -165,6 +168,20 @@ begin
 
   Machine.Init;
   Machine.Configurate(@Args);
+
+  if Args.Experimental then
+    Machine.ConfigureExperimental;
+
+  for I := 0 to High(Args.InputArgs) do begin
+    case Args.InputArgs[I]._Type of
+    0: if not Machine.InterpretFile(Args.InputArgs[I].S) then
+         Halt(1);
+    1: if not Machine.InterpretString(Args.InputArgs[I].S) then
+         Halt(1);
+    end;
+    if Machine.Bye then
+      break;
+  end;
 
   if Args.OutputFileName <> '' then begin
     BackendName := Args.Backend;
@@ -217,7 +234,10 @@ begin
       {$ENDIF}
     end;
 
-    Backend^.Translate(@TranslationTask);
+    TranslationTask.Include := Args.BackendInclude;
+
+    if not Backend^.Translate(@TranslationTask) then
+      Halt(1);
   end;
 
   if Args.Repl then begin

@@ -357,7 +357,7 @@ begin
   if Task^.CanFileName <> '' then begin
     Action := 'check';
     WorkerLogFile(@Self, Task^.CanFileName);
-    if not TestProgramsDiff(Task^.CanFileName, Task^.StdoutFileName, Task^.DiffFileName, DiffDetected) then begin
+    if not TestProgramsDiff(Task^.CanFileName, Task^.ActualOutputFileName, Task^.DiffFileName, DiffDetected) then begin
       Finished := True;
       Exit(False);
     end;

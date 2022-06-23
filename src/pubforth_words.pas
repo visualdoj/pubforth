@@ -20,7 +20,8 @@ unit pubforth_words;
 interface
 
 uses
-  ddateprimitives;
+  ddateprimitives,
+  pubforth_strings;
 
 const
   // Flags
@@ -71,6 +72,8 @@ procedure PrintDevelopmentPlan;
 
 function PatchReadmeFile(const FileName: AnsiString): Boolean;
       // Rewrites plan in the README.md file.
+
+function IsForth2012Plan(S, SEnd: PAnsiChar; out Date: AnsiString): Boolean;
 
 
 
@@ -680,7 +683,7 @@ begin
     Result := '0' + Result;
 end;
 
-function TimestampToDate(T: UInt32): AnsiString;
+function TimestampToSortedDate(T: UInt32): AnsiString;
 var
   Y, M, D: TDateInteger;
 begin
@@ -690,13 +693,28 @@ begin
   Exit(IntToStr0(Y, 4) + '.' + IntToStr0(M, 2) + '.' + IntToStr0(D, 2));
 end;
 
+function TimestampToDate(T: UInt32): AnsiString;
+const
+  Months: array[1 .. 12] of AnsiString = (
+    'jan', 'feb', 'mar', 'apr', 'may', 'jun',
+    'jul', 'aug', 'sep', 'oct', 'nov', 'dec'
+  );
+var
+  Y, M, D: TDateInteger;
+begin
+  if T = 0 then
+    Exit('1 jan 2024');
+  civil_from_days(T div (60 * 60 * 24), Y, M, D);
+  Exit(IntToStr(D) + ' ' + Months[M] + ' ' + IntToStr0(Y, 4));
+end;
+
 procedure PrintDevelopmentPlan;
 var
   I: Int32;
 begin
   RequireWordsInfo;
   for I := 0 to High(STATIC_WORDS_ARRAY) do begin
-    Writeln(TimestampToDate(STATIC_WORDS_ARRAY[I].T), ' ', STATIC_WORDS_ARRAY[I].N, '');
+    Writeln(TimestampToSortedDate(STATIC_WORDS_ARRAY[I].T), ' ', STATIC_WORDS_ARRAY[I].N, '');
   end;
 end;
 
@@ -807,7 +825,7 @@ begin
       if (Pos('PubForth', Name) = 0) and (Pos('[', Name) = 0) then
         Cross := '~~';
     end;
-    WriteLine('- [' + CheckBox + '] ' + Cross + TimestampToDate(STATIC_WORDS_ARRAY[I].T) + ' ' + Name + EscapedName + Cross);
+    WriteLine('- [' + CheckBox + '] ' + Cross + TimestampToSortedDate(STATIC_WORDS_ARRAY[I].T) + ' ' + Name + EscapedName + Cross);
   end;
 
   while not Eof(T) do begin
@@ -834,6 +852,23 @@ begin
 LFailed:
   {$PUSH} {$I-} Close(T); {$POP}
   {$PUSH} {$I-} Close(O); {$POP}
+
+  Exit(False);
+end;
+
+function IsForth2012Plan(S, SEnd: PAnsiChar; out Date: AnsiString): Boolean;
+var
+  I: Int32;
+begin
+  RequireWordsInfo;
+  for I := 0 to High(STATIC_WORDS_ARRAY) do begin
+    if  (STATIC_WORDS_ARRAY[I].F and FLAG_FORTH2012 <> 0)
+    and EqualsCaseInsensitive(S, SEnd, STATIC_WORDS_ARRAY[I].N)
+    then begin
+      Date := TimestampToDate(STATIC_WORDS_ARRAY[I].T);
+      Exit(True);
+    end;
+  end;
 
   Exit(False);
 end;
