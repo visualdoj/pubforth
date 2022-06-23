@@ -138,6 +138,9 @@ private
   // Stack
 
   FBase: PtrInt;
+
+  // TODO actual stack; for now only one cell is enough
+  FStackCell: TCell;
   // FStack: PCell; // S: TODO data stack
   // FControlFlowStack: PCell; // C: TODO
   // FReturnStack: PCell; // R: TODO
@@ -349,7 +352,7 @@ end;
 
 function f_Dot(Machine: PMachine): Boolean;
 begin
-  Write('7 '); // TODO stack
+  Write(TValueN(Machine^.FStackCell), ' ');
   Exit(True);
 end;
 
@@ -447,14 +450,58 @@ begin
   Exit(S);
 end;
 
-function ParseBaseNumber(S, SEnd: PAnsiChar; Base: Int32; out Value: TValueN): Boolean; inline;
+function DigitToNumber(C: AnsiChar): Int32;
 begin
-  UNUSED(@S);
-  UNUSED(@SEnd);
-  UNUSED(@Base);
-  UNUSED(@Value);
-  Writeln('TODO ParseBaseNumber');
-  Exit(False);
+  if C in ['0'..'9'] then begin
+    Exit(Ord(C) - Ord('0'));
+  end else if C in ['a'..'z'] then begin
+    Exit(Ord(C) - Ord('a'));
+  end else if C in ['A'..'Z'] then begin
+    Exit(Ord(C) - Ord('A'));
+  end else
+    Exit(0);
+end;
+
+function ParseBaseNumber(S, SEnd: PAnsiChar; Base: Int32; out Value: TValueN): Boolean; inline;
+label
+  LSuccess;
+var
+  MinusSign: Boolean;
+  D: Int32;
+begin
+  if S >= SEnd then
+    Exit(False);
+
+  if S^ = '-' then begin
+    MinusSign := True;
+    Inc(S);
+    if S >= SEnd then
+      Exit(False);
+  end else
+    MinusSign := False;
+
+  if DigitToNumber(S^) >= Base then
+    Exit(False);
+
+  Value := 0;
+  while S < SEnd do begin
+    if S^ in [' ', #9, #10, #13] then
+      goto LSuccess;
+
+    D := DigitToNumber(S^);
+    if D >= Base then
+      Exit(False);
+
+    Value := Value * Base + D;
+
+    Inc(S);
+  end;
+
+LSuccess:
+  if MinusSign then
+    Value := - Value;
+
+  Exit(True);
 end;
 
 function ParseDecimalNumber(S, SEnd: PAnsiChar; out Value: TValueN): Boolean; inline;
@@ -473,6 +520,9 @@ begin
       Exit(False);
   end else
     MinusSign := False;
+
+  if not (S^ in ['0'..'9']) then
+    Exit(False);
 
   Value := 0;
   while S < SEnd do begin
@@ -495,21 +545,85 @@ LSuccess:
 end;
 
 function ParseHexNumber(S, SEnd: PAnsiChar; out Value: TValueN): Boolean; inline;
+label
+  LSuccess;
+var
+  MinusSign: Boolean;
 begin
-  UNUSED(@S);
-  UNUSED(@SEnd);
-  UNUSED(@Value);
-  Writeln('TODO ParseHexNumber');
-  Exit(False);
+  if S >= SEnd then
+    Exit(False);
+
+  if S^ = '-' then begin
+    MinusSign := True;
+    Inc(S);
+    if S >= SEnd then
+      Exit(False);
+  end else
+    MinusSign := False;
+
+  if not (S^ in ['0'..'9', 'a'..'f', 'A'..'F']) then
+    Exit(False);
+
+  Value := 0;
+  while S < SEnd do begin
+    if S^ in [' ', #9, #10, #13] then
+      goto LSuccess;
+
+    if not (S^ in ['0'..'9', 'a'..'z', 'A'..'Z']) then
+      Exit(False);
+
+    if S^ in ['0'..'9'] then begin
+      Value := Value * 16 + Ord(S^) - Ord('0');
+    end else if S^ in ['a'..'f'] then begin
+      Value := Value * 16 + Ord(S^) - Ord('a') + 10;
+    end else if S^ in ['A'..'F'] then begin
+      Value := Value * 16 + Ord(S^) - Ord('A') + 10;
+    end;
+
+    Inc(S);
+  end;
+
+LSuccess:
+  if MinusSign then
+    Value := - Value;
+
+  Exit(True);
 end;
 
 function ParseBinNumber(S, SEnd: PAnsiChar; out Value: TValueN): Boolean; inline;
+label
+  LSuccess;
+var
+  MinusSign: Boolean;
 begin
-  UNUSED(@S);
-  UNUSED(@SEnd);
-  UNUSED(@Value);
-  Writeln('TODO ParseBinNumber');
-  Exit(False);
+  if S >= SEnd then
+    Exit(False);
+
+  MinusSign := S^ = '-';
+  if MinusSign then
+    Inc(S);
+
+  if (S >= SEnd) or not (S^ in ['0', '1']) then
+    Exit(False);
+
+  Value := 0;
+  while S < SEnd do begin
+    if S^ in [' ', #9, #10, #13] then
+      goto LSuccess;
+
+    if not (S^ in ['0', '1']) then
+      Exit(False);
+
+    Value := (Value shl 1) or (Ord(S^) - Ord('0'));
+
+    Inc(S);
+  end;
+
+LSuccess:
+  if MinusSign then
+    Value := - Value;
+
+  Exit(True);
 end;
 
 function ParseCNumber(S, SEnd: PAnsiChar; out Value: TValueN): Boolean; inline;
@@ -521,14 +635,6 @@ begin
 
   Exit(False);
 end;
-
-//function TryParseNumber(S, SEnd: PAnsiChar; out Value: TValueN): Boolean; inline;
-//begin
-//  Result := S < SEnd;
-//
-//  //case S^ of
-//  //'-': Exit(ParseBaseNumber(S, SEnd);
-//end;
 
 function ToPrintableString(S, SEnd: PAnsiChar): AnsiString;
 begin
@@ -562,7 +668,7 @@ begin
         end;
   else
     case FBase of
-     2: Exit(ParseHexNumber(S, SEnd, Num));
+     2: Exit(ParseBinNumber(S, SEnd, Num));
     10: Exit(ParseDecimalNumber(S, SEnd, Num));
     16: Exit(ParseHexNumber(S, SEnd, Num));
     else
@@ -611,7 +717,7 @@ begin
     end else begin
       if ParseAnyNum(S, NameEnd, Number) then begin
         if IsInterpreting then begin
-          Writeln(stderr, 'PUSH ', Number);
+          FStackCell := Pointer(Number);
         end else begin
           Writeln(stderr, 'LITERAL ', Number);
         end;
