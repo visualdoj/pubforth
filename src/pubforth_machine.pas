@@ -119,6 +119,7 @@ public
   procedure LoadDefaultWords;
 
   function CreateDifinition(const Name: AnsiString): PDictionaryRecord;
+  function CreateDifinition(Name, NameEnd: PAnsiChar): PDictionaryRecord;
 
   function Find(const Name: AnsiString; out Rec: PDictionaryRecord): Boolean;
   function Find(Name, NameEnd: PAnsiChar; out Rec: PDictionaryRecord): Boolean;
@@ -277,6 +278,14 @@ begin
   FLast := Result;
 end;
 
+function TDictionary.CreateDifinition(Name, NameEnd: PAnsiChar): PDictionaryRecord;
+begin
+  Result := CreateDifinition('');
+  SetLength(Result^.Name, NameEnd - Name);
+  Move(Name^, Result^.Name[1], NameEnd - Name);
+  FLast := Result;
+end;
+
 function TDictionary.Find(const Name: AnsiString; out Rec: PDictionaryRecord): Boolean;
 var
   It: PDictionaryRecord;
@@ -330,12 +339,42 @@ begin
   Exit(True);
 end;
 
-function f_Colon(Machine: PMachine): Boolean;
+function SkipSpaces(S, SEnd: PAnsiChar): PAnsiChar; inline;
 begin
-  //if not Machine^.IsInterpreting then
-  //  Exit(Machine^.Error('no compile semantic for :'));
+  while (S < SEnd) and (S^ in [' ', #13, #10, #9]) do
+    Inc(S);
 
-  // NameEnd := SkipName(S, SEnd);
+  Exit(S);
+end;
+
+function SkipName(S, SEnd: PAnsiChar): PAnsiChar; inline;
+begin
+  while (S < SEnd) and not (S^ = ' ') do
+    Inc(S);
+
+  Exit(S);
+end;
+
+function f_ColonDefinition(Machine: PMachine): Boolean;
+begin
+  Writeln('Colon definition');
+  Exit(True);
+end;
+
+function f_Colon(Machine: PMachine): Boolean;
+var
+  NameEnd: PAnsiChar;
+  Rec: PDictionaryRecord;
+begin
+  Machine^.FSource := SkipSpaces(Machine^.FSource, Machine^.FSourceEnd);
+  NameEnd := SkipName(Machine^.FSource, Machine^.FSourceEnd);
+  if Machine^.FSource >= NameEnd then
+    Exit(Machine^.Error('name expected after :'));
+
+  Rec := Machine^.FDictionary.CreateDifinition(Machine^.FSource, NameEnd);
+  Rec^.Semantic := @f_ColonDefinition;
+
+  Machine^.FSource := NameEnd + 1;
   Machine^.FState := STATE_COMPILE;
   Exit(True);
 end;
@@ -346,7 +385,7 @@ begin
     Exit(Machine^.Error('no interpreatation semantic for ;'));
 
   Machine^.FState := STATE_INTERPRETING;
-  Writeln;
+  Writeln('Generated ', Machine^.FDictionary.FLast^.Name);
   Exit(True);
 end;
 
@@ -474,22 +513,6 @@ end;
 function TMachine.IsInterpreting: Boolean; inline;
 begin
   Exit(FState = 0);
-end;
-
-function SkipSpaces(S, SEnd: PAnsiChar): PAnsiChar; inline;
-begin
-  while (S < SEnd) and (S^ in [' ', #13, #10, #9]) do
-    Inc(S);
-
-  Exit(S);
-end;
-
-function SkipName(S, SEnd: PAnsiChar): PAnsiChar; inline;
-begin
-  while (S < SEnd) and not (S^ = ' ') do
-    Inc(S);
-
-  Exit(S);
 end;
 
 function DigitToNumber(C: AnsiChar): Int32;
