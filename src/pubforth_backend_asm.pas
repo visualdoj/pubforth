@@ -101,7 +101,7 @@ begin
   OpenTextFile(Task^.OutputFileName);
 
   if Task^.TargetOS = 'windows' then begin
-    WriteLine('; ' + Task^.BackendName + ' to windows');
+    WriteLine('; ' + Task^.BackendName + ' for windows');
     WriteLine('format PE console');
     WriteLine('entry main');
     WriteLine('');
@@ -133,7 +133,7 @@ begin
     WriteLine('       printf,''printf'',\');
     WriteLine('       getchar,''_fgetchar''');
   end else if Task^.TargetOS = 'linux' then begin
-    WriteLine('; ' + Task^.BackendName + ' to linux');
+    WriteLine('; ' + Task^.BackendName + ' for linux');
     WriteLine('');
     WriteLine('format ELF executable 3');
     WriteLine('entry main');
