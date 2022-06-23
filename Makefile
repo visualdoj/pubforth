@@ -41,18 +41,18 @@ bin :
 .build/tool : .build
 	cd .build && $(MKDIRP) tool || $(PASS)
 
-TESTPROGRAMS:=bin/testprograms$(EXEEXT)
-$(TESTPROGRAMS) : prepare_build .build/tool bin
+TOOL_TESTPROGRAMS:=bin/testprograms$(EXEEXT)
+$(TOOL_TESTPROGRAMS) : prepare_build .build/tool bin
 	cd tool/testprograms && fpc $(FPC_FLAGS) -Sew -FE../../bin -FU../../.build/tool testprograms.pas
 
-build_tools : $(TESTPROGRAMS) ;
+build_tools : $(TOOL_TESTPROGRAMS) ;
 
 PUBFORTH:=bin/pubforth$(EXEEXT)
 build : prepare_build build_tools .build bin
 	cd src && fpc $(FPC_FLAGS) -Sew -FE../bin -FU../.build pubforth.pas
 
-test : $(TESTPROGRAMS)
-	$(TESTPROGRAMS) -l tests.list -d .build
+test : $(TOOL_TESTPROGRAMS)
+	$(TOOL_TESTPROGRAMS) -l tests.list -d .build
 
 
 ifneq ($(wildcard ../pubforth_external/Makefile.inc),)
