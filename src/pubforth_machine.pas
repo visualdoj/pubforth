@@ -362,6 +362,31 @@ begin
   Exit(True);
 end;
 
+function SkipLine(S, SEnd: PAnsiChar; out NextLine: PAnsiChar): Boolean;
+begin
+  while S < SEnd do begin
+    if S^ = #10 then begin
+      Inc(S);
+      Exit(True);
+    end else if S^ = #13 then begin
+      Inc(S);
+      if (S < SEnd) and (S^ = #10) then
+        Inc(S);
+      NextLine := S;
+      Exit(True);
+    end;
+    Inc(S);
+  end;
+
+  NextLine := SEnd;
+  Exit(True);
+end;
+
+function f_SingleLineComment(Machine: PMachine): Boolean;
+begin
+  Exit(SkipLine(Machine^.FSource, Machine^.FSourceEnd, Machine^.FSource));
+end;
+
 procedure TMachine.Init;
 begin
   Bye := False;
@@ -404,7 +429,7 @@ procedure TMachine.Configurate(Args: PPubForthCLArgs);
 begin
   UNUSED(Args);
 
-  RegIntrinsic('BYE', @f_BYE, OP_BYE);
+  RegIntrinsic('BYE',   @f_BYE, OP_BYE);
 end;
 
 procedure TMachine.ConfigureREPL;
@@ -413,6 +438,7 @@ end;
 
 procedure TMachine.ConfigureExperimental;
 begin
+  RegImmediate('\',   @f_SingleLineComment);
   RegIntrinsic('CR',  @f_CR, OP_CR);
   RegIntrinsic(':',   @f_Colon, OP_ENTER);
   RegImmediate(';',   @f_Semicolon);
@@ -676,7 +702,7 @@ begin
     end;
   end;
 
-  Exit(False); // make compiler happy
+  Exit(False);
 end;
 
 function TMachine.Interpret(S, SEnd: PAnsiChar): Boolean;
