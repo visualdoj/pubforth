@@ -362,29 +362,44 @@ begin
   Exit(True);
 end;
 
-function SkipLine(S, SEnd: PAnsiChar; out NextLine: PAnsiChar): Boolean;
+function SkipLine(S, SEnd: PAnsiChar): PAnsiChar;
 begin
   while S < SEnd do begin
     if S^ = #10 then begin
-      Inc(S);
-      Exit(True);
+      Exit(S + 1);
     end else if S^ = #13 then begin
       Inc(S);
       if (S < SEnd) and (S^ = #10) then
-        Inc(S);
-      NextLine := S;
-      Exit(True);
+        Exit(S + 1);
+      Exit(S);
     end;
     Inc(S);
   end;
 
-  NextLine := SEnd;
-  Exit(True);
+  Exit(SEnd);
 end;
 
 function f_SingleLineComment(Machine: PMachine): Boolean;
 begin
-  Exit(SkipLine(Machine^.FSource, Machine^.FSourceEnd, Machine^.FSource));
+  Machine^.FSource := SkipLine(Machine^.FSource, Machine^.FSourceEnd);
+  Exit(True);
+end;
+
+function SkipToCloseRoundBracketOrEOS(S, SEnd: PAnsiChar): PAnsiChar;
+begin
+  while S < SEnd do begin
+    if S^ = ')' then
+      Exit(S + 1);
+    Inc(S);
+  end;
+
+  Exit(SEnd);
+end;
+
+function f_MultiLineComment(Machine: PMachine): Boolean;
+begin
+  Machine^.FSource := SkipToCloseRoundBracketOrEOS(Machine^.FSource, Machine^.FSourceEnd);
+  Exit(True);
 end;
 
 procedure TMachine.Init;
@@ -439,6 +454,7 @@ end;
 procedure TMachine.ConfigureExperimental;
 begin
   RegImmediate('\',   @f_SingleLineComment);
+  RegImmediate('(',   @f_MultiLineComment);
   RegIntrinsic('CR',  @f_CR, OP_CR);
   RegIntrinsic(':',   @f_Colon, OP_ENTER);
   RegImmediate(';',   @f_Semicolon);
