@@ -1,4 +1,4 @@
-; fasm to windows
+; fasm for windows
 format PE console
 entry main
 

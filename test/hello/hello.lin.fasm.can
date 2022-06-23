@@ -1,4 +1,4 @@
-; fasm to linux
+; fasm for linux
 
 format ELF executable 3
 entry main
