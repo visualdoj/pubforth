@@ -78,7 +78,7 @@ jobs:
             mkdir "${{ steps.pubforth_version.outputs.package }}"
             mkdir "${{ steps.pubforth_version.outputs.package }}/bin"
             cp pubforth/bin/pubforth* "${{ steps.pubforth_version.outputs.package }}/bin/"
-            tar -cvf "${{ steps.pubforth_version.outputs.package }}.tar" ${{ steps.pubforth_version.outputs.package }}/*
+            tar -czvf "${{ steps.pubforth_version.outputs.package }}.tar.gz" ${{ steps.pubforth_version.outputs.package }}/*
 
       - name: 🤐 Zip it
         uses: thedoctor0/zip-release@main
@@ -88,11 +88,11 @@ jobs:
             filename:  ${{ steps.pubforth_version.outputs.package }}.zip
             path:      ${{ steps.pubforth_version.outputs.package }}
 
-      - name: 🛪 Upload tar
+      - name: 🛪 Upload tarball
         uses: actions/upload-artifact@v3
         with:
-          name: "${{ steps.pubforth_version.outputs.package }}.tar"
-          path: "${{ github.workspace }}/${{ steps.pubforth_version.outputs.package }}.tar"
+          name: "${{ steps.pubforth_version.outputs.package }}.tar.gz"
+          path: "${{ github.workspace }}/${{ steps.pubforth_version.outputs.package }}.tar.gz"
 
       - name: 🛪 Upload zip
         uses: actions/upload-artifact@v3
