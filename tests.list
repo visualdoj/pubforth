@@ -9,7 +9,7 @@ bin/pubforth --version
 bin/pubforth -e bye -e foobar
 
 TESTNAME=single_line_comments cd test/comments && ../../bin/pubforth single_line_comments.fs
-TESTNAME=multi_line_comments  cd test/comments && ../../bin/pubforth --experimental multi_line_comments.fs
+TESTNAME=multi_line_comments  cd test/comments && ../../bin/pubforth multi_line_comments.fs
 
 # Test backends
 TESTNAME=hello.dump     cd test/hello && ../../bin/pubforth hello.fs -o hello.dump

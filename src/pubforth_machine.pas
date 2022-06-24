@@ -635,6 +635,7 @@ begin
 
   RegIntrinsic('BYE',     @f_BYE, OP_BYE);
   RegImmediate('\',       @f_SingleLineComment);
+  RegImmediate('(',       @f_MultiLineComment);
 end;
 
 procedure TMachine.ConfigureTest;
@@ -646,7 +647,6 @@ end;
 
 procedure TMachine.ConfigureExperimental;
 begin
-  RegImmediate('(',       @f_MultiLineComment);
   RegIntrinsic('CR',      @f_CR, OP_CR);
   RegIntrinsic(':',       @f_Colon, OP_ENTER);
   RegImmediate(';',       @f_Semicolon);
