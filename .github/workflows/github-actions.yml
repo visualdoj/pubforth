@@ -7,7 +7,7 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            package_ext: *
+            package_ext: '*'
           - os: ubuntu-latest
             package_ext: tar.gz
           - os: macos-latest
