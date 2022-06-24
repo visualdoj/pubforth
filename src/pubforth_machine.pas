@@ -542,7 +542,8 @@ procedure TMachine.Configurate(Args: PPubForthCLArgs);
 begin
   UNUSED(Args);
 
-  RegIntrinsic('BYE',   @f_BYE, OP_BYE);
+  RegIntrinsic('BYE',     @f_BYE, OP_BYE);
+  RegImmediate('\',       @f_SingleLineComment);
 end;
 
 procedure TMachine.ConfigureREPL;
@@ -551,7 +552,6 @@ end;
 
 procedure TMachine.ConfigureExperimental;
 begin
-  RegImmediate('\',       @f_SingleLineComment);
   RegImmediate('(',       @f_MultiLineComment);
   RegIntrinsic('CR',      @f_CR, OP_CR);
   RegIntrinsic(':',       @f_Colon, OP_ENTER);

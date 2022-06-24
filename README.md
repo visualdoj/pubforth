@@ -20,12 +20,12 @@ One day - one word. 💪 *(Not mandatory...)*
 - [x] 2022.06.14 [Initial repository, build, test](docs/news/initial.md)
 - [x] 2022.06.15 [GitHub workflow](docs/news/workflow.md)
 - [x] 2022.06.23 [PubForth 0.0.0: Zero-day release with effectively no words supported](https://github.com/visualdoj/pubforth/releases/tag/v0.0.0)
-- [ ] 2022.06.24 `:` "colon"
-- [ ] 2022.06.25 `;` "semicolon"
-- [ ] 2022.06.26 `."` "dot-quote"
-- [ ] 2022.06.27 `CR`
-- [ ] 2022.06.28 `(` "paren"
-- [ ] 2022.06.29 `\` "backslash"
+- [x] ~~2022.06.24 `\` "backslash"~~
+- [ ] 2022.06.25 `(` "paren"
+- [ ] 2022.06.26 `:` "colon"
+- [ ] 2022.06.27 `;` "semicolon"
+- [ ] 2022.06.28 `."` "dot-quote"
+- [ ] 2022.06.29 `CR`
 - [ ] 202?.??.?? `PubForth 0.1.0`: "Hello world" starter pack
 - [ ] 2022.06.30 `.` "dot"
 - [ ] 2022.07.01 `SWAP`
