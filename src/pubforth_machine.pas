@@ -24,9 +24,11 @@ const
 {$IF STACK_DIRECTION_UP}
   {$DEFINE WGrow := Inc}
   {$DEFINE WDrop := Dec}
+  {$DEFINE WDir  := 1}
 {$ELSE}
   {$DEFINE WGrow := Dec}
   {$DEFINE WDrop := Inc}
+  {$DEFINE WDir  := -1}
 {$ENDIF}
 
 type
@@ -165,7 +167,11 @@ private
   FCodeEnd: PUInt8;
 
   // Tests
-  FActualDepth: SizeUInt;
+  FTestStartStack: PCell;
+  FTestStartDepth: Int32;
+  FTestActualDepth: Int32;
+  FTestResults: array of TCell;
+  FTestSource: PAnsiChar;
 
   function  Error(const ErrorMsg: AnsiString): Boolean;
   procedure Hint(const HintMsg: AnsiString);
@@ -185,6 +191,8 @@ public
   procedure ConfigureTest;
   procedure ConfigureExperimental;
   procedure ConfigureREPL;
+
+  function  StackDepth: Int32; inline;
 
   procedure Compile(Opcode: UInt8);
   procedure CompileCall(Xt: PDictionaryRecord);
@@ -499,19 +507,55 @@ begin
   Exit(True);
 end;
 
-function f_BeginTest(Machine: PMachine): Boolean;
+function SliceToAnsiString(S, SEnd: PAnsiChar): AnsiString;
 begin
-  Exit(Machine^.Error('not implemented'));
+  SetLength(Result, SEnd - S);
+  Move(S^, Result[1], SEnd - S);
 end;
 
-function f_EndTest(Machine: PMachine): Boolean;
+function f_BeginTest(Machine: PMachine): Boolean;
 begin
-  Exit(Machine^.Error('not implemented'));
+  Machine^.FTestStartStack  := Machine^.FStack;
+  Machine^.FTestStartDepth  := Machine^.StackDepth;
+  Machine^.FTestActualDepth := Machine^.StackDepth;
+  Machine^.FTestSource := Machine^.FSource;
+  SetLength(Machine^.FTestResults, 0);
+  Exit(True);
 end;
 
 function f_TestCheckpoint(Machine: PMachine): Boolean;
+var
+  I: Int32;
 begin
-  Exit(Machine^.Error('not implemented'));
+  Machine^.FTestActualDepth := Machine^.StackDepth;
+  if Machine^.FTestActualDepth > Machine^.FTestStartDepth then begin
+    SetLength(Machine^.FTestResults, Machine^.FTestActualDepth - Machine^.FTestStartDepth);
+    for I := 0 to Machine^.FTestActualDepth - Machine^.FTestStartDepth do begin
+      Machine^.FTestResults[I] := (Machine^.FStack + WDir * I)^;
+    end;
+  end;
+  Machine^.FStack := Machine^.FTestStartStack;
+  Exit(True);
+end;
+
+function f_EndTest(Machine: PMachine): Boolean;
+var
+  I: Int32;
+begin
+  // TODO vectorize Error handling
+  // TODO allow not fail at first error
+
+  if Machine^.FTestActualDepth <> Machine^.StackDepth then
+    Exit(Machine^.Error('WRONG NUMBER OF RESULTS: T{ ' + SliceToAnsiString(Machine^.FTestSource, Machine^.FSource)));
+
+  if Machine^.FTestActualDepth > Machine^.FTestStartDepth then begin
+    for I := 0 to High(Machine^.FTestResults) do begin
+      if Machine^.FTestResults[I] <> (Machine^.FStack + WDir * I)^ then
+        Exit(Machine^.Error('INCORRECT RESULT: T{ ' + SliceToAnsiString(Machine^.FTestSource, Machine^.FSource)));
+    end;
+  end;
+
+  Exit(True);
 end;
 
 function SkipToCloseRoundBracketOrEOS(S, SEnd: PAnsiChar): PAnsiChar;
@@ -539,14 +583,12 @@ begin
 
   // TODO be more adaptive: allow dynamic stack size
   SetLength(FStackArray, 4 * 1024);
+  FStackBegin := @FStackArray[0];
+  FStackEnd := FStackBegin + Length(FStackArray);
   {$IF STACK_DIRECTION_UP}
-    FStackBegin := @FCodeArray[0];
-    FStackEnd := FStackBegin + Length(FStackArray);
-    FStack := FStackBegin; // TODO some padding
+    FStack := FStackBegin; // TODO some padding for little safety
   {$ELSE}
-    FStackEnd := @FCodeArray[0];
-    FStackBegin := FStackBegin + Length(FStackArray);
-    FStack := FStackEnd; // TODO some padding
+    FStack := FStackEnd; // TODO some padding for little safety
   {$ENDIF}
 
   // TODO be more adaptive: allow expanding code size
@@ -614,6 +656,15 @@ end;
 
 procedure TMachine.ConfigureREPL;
 begin
+end;
+
+function  TMachine.StackDepth: Int32; inline;
+begin
+  {$IF STACK_DIRECTION_UP}
+    Exit(FStack - FStackBegin);
+  {$ELSE}
+    Exit(FStackBegin - FStack);
+  {$ENDIF}
 end;
 
 procedure TMachine.Compile(Opcode: UInt8);
@@ -888,13 +939,15 @@ begin
     if FDictionary.Find(S, NameEnd, Definition) then begin
       if IsInterpreting then begin
         if @Definition^.Semantic <> nil then begin
-          Definition^.Semantic(@Self);
+          if not Definition^.Semantic(@Self) then
+            Exit(False);
         end else
           Writeln(stderr, 'ERROR no semantic for ', Definition^.Name);
       end else begin
         if Definition^.Immediate then begin
           if @Definition^.Semantic <> nil then begin
-            Definition^.Semantic(@Self);
+            if not Definition^.Semantic(@Self) then
+              Exit(False);
           end else
             Writeln(stderr, 'ERROR no semantic for ', Definition^.Name);
         end else begin
