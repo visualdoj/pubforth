@@ -17,6 +17,18 @@ uses
   pubforth_strings,
   pubforth_words;
 
+const
+  STACK_DIRECTION_UP = False;
+
+{$MACRO ON}
+{$IF STACK_DIRECTION_UP}
+  {$DEFINE WGrow := Inc}
+  {$DEFINE WDrop := Dec}
+{$ELSE}
+  {$DEFINE WGrow := Dec}
+  {$DEFINE WDrop := Inc}
+{$ENDIF}
+
 type
 TInputSourceSpecification = record
       // for nesting of parser operationg
@@ -136,13 +148,14 @@ private
   FSource: PAnsiChar;     // <- cursor
   FSourceEnd: PAnsiChar;
 
-  // Stack
-
   FBase: PtrInt;
 
-  // TODO actual stack; for now only one cell is enough
-  FStackCell: TCell;
-  // FStack: PCell; // S: TODO data stack
+  // Stack
+  FStackArray: array of TCell;
+  FStackBegin: PCell;
+  FStack: PCell; // <- cursor
+  FStackEnd: PCell;
+
   // FControlFlowStack: PCell; // C: TODO
   // FReturnStack: PCell; // R: TODO
 
@@ -150,6 +163,9 @@ private
   FCodeBegin: PUInt8;
   FCode: PUInt8; // <- cursor
   FCodeEnd: PUInt8;
+
+  // Tests
+  FActualDepth: SizeUInt;
 
   function  Error(const ErrorMsg: AnsiString): Boolean;
   procedure Hint(const HintMsg: AnsiString);
@@ -166,8 +182,9 @@ public
   procedure Configurate(Args: PPubForthCLArgs);
       // Should be called after Init.
 
-  procedure ConfigureREPL;
+  procedure ConfigureTest;
   procedure ConfigureExperimental;
+  procedure ConfigureREPL;
 
   procedure Compile(Opcode: UInt8);
   procedure CompileCall(Xt: PDictionaryRecord);
@@ -261,7 +278,8 @@ begin
     case Code^ of
     OP_NOP: ;
     OP_LITERAL: begin
-                  Machine^.FStackCell := Pointer(Pointer(Code + 1)^);
+                  WGrow(Machine^.FStack);
+                  Machine^.FStack^ := Pointer(Pointer(Code + 1)^);
                   Inc(Code, 1 + SizeOf(TValueN));
                   continue;
                 end;
@@ -272,7 +290,10 @@ begin
                continue;
              end;
     OP_ENTER: Exit(Machine^.Error('OP_ENTER is not ready'));
-    OP_DOT: Write(TValueN(Machine^.FStackCell), ' ');
+    OP_DOT: begin
+              Write(TValueN(Machine^.FStack^), ' ');
+              WDrop(Machine^.FStack);
+            end;
     OP_BYE: begin
               Machine^.Bye := True;
               Exit(True);
@@ -431,7 +452,8 @@ end;
 
 function f_Dot(Machine: PMachine): Boolean;
 begin
-  Write(TValueN(Machine^.FStackCell), ' ');
+  Write(TValueN(Machine^.FStack^), ' ');
+  WDrop(Machine^.FStack);
   Exit(True);
 end;
 
@@ -477,6 +499,21 @@ begin
   Exit(True);
 end;
 
+function f_BeginTest(Machine: PMachine): Boolean;
+begin
+  Exit(Machine^.Error('not implemented'));
+end;
+
+function f_EndTest(Machine: PMachine): Boolean;
+begin
+  Exit(Machine^.Error('not implemented'));
+end;
+
+function f_TestCheckpoint(Machine: PMachine): Boolean;
+begin
+  Exit(Machine^.Error('not implemented'));
+end;
+
 function SkipToCloseRoundBracketOrEOS(S, SEnd: PAnsiChar): PAnsiChar;
 begin
   while S < SEnd do begin
@@ -499,6 +536,18 @@ begin
   Bye := False;
   FState := 0;
   FBase := 10;
+
+  // TODO be more adaptive: allow dynamic stack size
+  SetLength(FStackArray, 4 * 1024);
+  {$IF STACK_DIRECTION_UP}
+    FStackBegin := @FCodeArray[0];
+    FStackEnd := FStackBegin + Length(FStackArray);
+    FStack := FStackBegin; // TODO some padding
+  {$ELSE}
+    FStackEnd := @FCodeArray[0];
+    FStackBegin := FStackBegin + Length(FStackArray);
+    FStack := FStackEnd; // TODO some padding
+  {$ENDIF}
 
   // TODO be more adaptive: allow expanding code size
   SetLength(FCodeArray, 4 * 1024);
@@ -546,8 +595,11 @@ begin
   RegImmediate('\',       @f_SingleLineComment);
 end;
 
-procedure TMachine.ConfigureREPL;
+procedure TMachine.ConfigureTest;
 begin
+  RegIntrinsic('T{',      @f_BeginTest, -1);
+  RegIntrinsic('}T',      @f_EndTest, -1);
+  RegIntrinsic('->',      @f_TestCheckpoint, -1);
 end;
 
 procedure TMachine.ConfigureExperimental;
@@ -558,6 +610,10 @@ begin
   RegImmediate(';',       @f_Semicolon);
   RegIntrinsic('.',       @f_Dot, OP_DOT);
   RegIntrinsic('WORDS',   @f_Words, OP_WORDS);
+end;
+
+procedure TMachine.ConfigureREPL;
+begin
 end;
 
 procedure TMachine.Compile(Opcode: UInt8);
@@ -852,7 +908,8 @@ begin
     end else begin
       if ParseAnyNum(S, NameEnd, Number) then begin
         if IsInterpreting then begin
-          FStackCell := Pointer(Number);
+          WGrow(FStack);
+          FStack^ := Pointer(Number);
         end else begin
           CompileLiteral(Number);
         end;

@@ -172,6 +172,9 @@ begin
   if Args.Experimental then
     Machine.ConfigureExperimental;
 
+  if Args.Test then
+    Machine.ConfigureTest;
+
   for I := 0 to High(Args.InputArgs) do begin
     case Args.InputArgs[I]._Type of
     0: if not Machine.InterpretFile(Args.InputArgs[I].S) then

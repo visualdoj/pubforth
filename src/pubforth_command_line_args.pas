@@ -40,6 +40,7 @@ TPubForthCLArgs = object
   PrintStdList: Boolean;
   PrintBackendsList: Boolean;
   Experimental: Boolean;
+  Test: Boolean;
   Std: AnsiString;
   Repl: Boolean;
   NoRepl: Boolean;
@@ -141,6 +142,7 @@ begin
   PrintStdList := False;
   PrintBackendsList := False;
   Experimental := False;
+  Test := False;
   Backend := '';
   BackendInclude := '';
   OutputFileName := '';
@@ -180,6 +182,8 @@ begin
       PrintBackendsList := True;
     end else if ParamStr(I) = '--experimental' then begin
       Experimental := True;
+    end else if ParamStr(I) = '--test' then begin
+      Test := True;
     end else if ParamStr(I) = '--repl' then begin
       Repl := True;
     end else if ParamStr(I) = '--no-repl' then begin
@@ -391,6 +395,10 @@ begin
   A('  --experimental');
   L('     Turns on all experimental and not-yet-tested words');
   L('');
+  A('  --test');
+  L('     Turns on test mode. Essentially it adds the following words:');
+  L('     T{   ->   }T');
+  L('');
   A('  --repl');
   L('     Run REPL mode after processing all sources');
   L('');
@@ -408,23 +416,26 @@ begin
   PrintHelp(True);
 end;
 
+procedure PrintShortVersion;
+begin
+  Write(PUBFORTH_VERSION_MAIN, '.', PUBFORTH_VERSION_MAJOR, '.', PUBFORTH_VERSION_MINOR);
+  {$IF PUBFORTH_VERSION_PATCH > 0}
+    Write('.', PUBFORTH_VERSION_PATCH);
+  {$ENDIF}
+  Writeln;
+end;
+
 procedure PrintVersion;
 begin
-  Write('PubForth ', PUBFORTH_VERSION_MAJOR, '.', PUBFORTH_VERSION_MINOR, '.', PUBFORTH_VERSION_PATCH);
-// {$IF Declared(PUBFORTH_VERSION_PRERELEASE)}
-//   Write('-', PUBFORTH_VERSION_PRERELEASE);
-// {$ENDIF}
-// {$IF Declared(PUBFORTH_VERSION_META)}
-//   Write('+', PUBFORTH_VERSION_META);
-// {$ENDIF}
+  Write('PubForth ', PUBFORTH_VERSION_MAIN, '.', PUBFORTH_VERSION_MAJOR, '.', PUBFORTH_VERSION_MINOR);
+  {$IF PUBFORTH_VERSION_PATCH > 0}
+    Write('.', PUBFORTH_VERSION_PATCH);
+  {$ENDIF}
+  Write(PUBFORTH_VERSION_PRERELEASE);
+  Write(PUBFORTH_VERSION_META);
   Writeln;
   Writeln('Public domain implementation of Forth');
   Writeln('https://github.com/visualdoj/pubforth');
-end;
-
-procedure PrintShortVersion;
-begin
-  Writeln(PUBFORTH_VERSION_MAJOR, '.', PUBFORTH_VERSION_MINOR, '.', PUBFORTH_VERSION_PATCH);
 end;
 
 procedure PrintStdList;
