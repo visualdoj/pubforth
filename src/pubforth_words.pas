@@ -139,7 +139,7 @@ STATIC_WORDS_ARRAY: array[0 .. 480 - 1] of TWordInfo = (
   (N: '[PubForth 0.0.0: Zero-day release with effectively no words supported](https://github.com/visualdoj/pubforth/releases/tag/v0.0.0)';     E: nil; T: 1655965970; F: FLAG_PUBFORTH_MILESTONE),
 
   (N: '\';                  E: 'backslash';           T: 1656065664; F: FLAG_FORTH2012_CORE_EXT),
-  (N: '(';                  E: 'paren';               T: 0; F: FLAG_FORTH2012_CORE),
+  (N: '(';                  E: 'paren';               T: 1656112824; F: FLAG_FORTH2012_CORE),
   (N: ':';                  E: 'colon';               T: 0; F: FLAG_FORTH2012_CORE),
   (N: ';';                  E: 'semicolon';           T: 0; F: FLAG_FORTH2012_CORE),
   (N: '."';                 E: 'dot_quote';           T: 0; F: FLAG_FORTH2012_CORE),
