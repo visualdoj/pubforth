@@ -202,11 +202,11 @@ var
   L, R, Diff: TLines;
 begin
   if not TestProgramReadLines(Left, L) then begin
-    PrintError(['could not read file for diff: ', Left]);
+    PrintError(['could not read left file for diff: ', Left]);
     Exit(False);
   end;
   if not TestProgramReadLines(Right, R) then begin
-    PrintError(['could not read file for diff: ', Right]);
+    PrintError(['could not read right file for diff: ', Right]);
     Exit(False);
   end;
   if not TestProgramDiffLines(L, R, Diff, DiffDetected) then begin

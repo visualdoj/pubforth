@@ -240,6 +240,7 @@ var
   FOut, FErr: File;
   TestDir, Stdin: AnsiString;
   DiffDetected: Boolean;
+  OutputPath: AnsiString;
 begin
   while Stage <= High(Task^.Cmds) do begin
     Command := Task^.Cmds[Stage];
@@ -357,8 +358,16 @@ begin
   if Task^.CanFileName <> '' then begin
     Action := 'check';
     WorkerLogFile(@Self, Task^.CanFileName);
-    if not TestProgramsDiff(Task^.CanFileName, Task^.ActualOutputFileName, Task^.DiffFileName, DiffDetected) then begin
+    OutputPath := Task^.ActualOutputFileName;
+    if not FileExists(OutputPath) then begin
+      // TODO better output file detection...
+      OutputPath := Task^.StdoutFileName;
+    end;
+    if not TestProgramsDiff(Task^.CanFileName, OutputPath, Task^.DiffFileName, DiffDetected) then begin
       Finished := True;
+      Task^.Ok := False;
+      Task^.Regression := True;
+      Task^.Verdict := 'REGRESSION'; // TODO preparation_failed?
       Exit(False);
     end;
     if DiffDetected then begin
