@@ -76,8 +76,8 @@ jobs:
         run: |
             bin/pubforth --version
             echo "::set-output name=version::$(bin/pubforth --short-version)"
-            echo "::set-output name=package::pubforth-$(bin/pubforth --short-version)-${{ runner.os }}-x64"
-            echo "::set-output name=asset::pubforth-${{ runner.os }}-x64"
+            echo "::set-output name=artifact::pubforth-$(bin/pubforth --short-version)-${{ runner.os }}-x64"
+            echo "::set-output name=package::pubforth-${{ runner.os }}-x64"
 
       - name: 📦 Make package
         working-directory: ${{ github.workspace }}
@@ -98,13 +98,13 @@ jobs:
       - name: 🛪 Upload tarball
         uses: actions/upload-artifact@v3
         with:
-          name: "${{ steps.pubforth_version.outputs.package }}.tar.gz"
+          name: "${{ steps.pubforth_version.outputs.artifact }}.tar.gz"
           path: "${{ github.workspace }}/${{ steps.pubforth_version.outputs.package }}.tar.gz"
 
       - name: 🛪 Upload zip
         uses: actions/upload-artifact@v3
         with:
-          name: "${{ steps.pubforth_version.outputs.package }}.zip"
+          name: "${{ steps.pubforth_version.outputs.artifact }}.zip"
           path: "${{ github.workspace }}/${{ steps.pubforth_version.outputs.package }}.zip"
 
       - name: 🔬 Test PubForth
@@ -116,5 +116,4 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           file: "${{ steps.pubforth_version.outputs.package }}.${{ matrix.package_ext }}"
-          asset_name: "${{ steps.pubforth_version.outputs.asset }}.${{ matrix.package_ext }}"
           file_glob: true
