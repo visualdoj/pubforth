@@ -114,13 +114,28 @@ end;
 
 function  TBackendPascal.Compile(Task: PTranslationTask): Boolean;
 var
+  CmdS: array of AnsiString;
   Cmd: array of PAnsiChar;
+
+  procedure AddCmd(const S: AnsiString);
+  begin
+    SetLength(CmdS, Length(CmdS) + 1);
+    SetLength(Cmd, Length(Cmd) + 1);
+    CmdS[High(CmdS)] := S;
+    if S = '' then begin
+      Cmd[High(Cmd)] := nil;
+    end else
+      Cmd[High(Cmd)] := PAnsiChar(CmdS[High(CmdS)]);
+  end;
 begin
-  SetLength(Cmd, 4);
-  Cmd[0] := 'fpc';
-  Cmd[1] := PAnsiChar(Task^.OutputFileName);
-  Cmd[2] := '-FE.'; // TODO temp directory
-  Cmd[3] := nil;
+  SetLength(CmdS, 0);
+  SetLength(Cmd, 0);
+
+  AddCmd('fpc');
+  AddCmd(Task^.OutputFileName);
+  AddCmd('-FE.'); // TODO temp directory
+  AddCmd('-o' + Task^.BinaryFileName);
+  AddCmd('');
 
   Result := ExecuteShell(@Cmd[0]);
 end;
