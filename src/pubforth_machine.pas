@@ -416,7 +416,7 @@ end;
 
 function SkipName(S, SEnd: PAnsiChar): PAnsiChar; inline;
 begin
-  while (S < SEnd) and not (S^ = ' ') do
+  while (S < SEnd) and not (S^ in [' ', #13, #10, #9]) do
     Inc(S);
 
   Exit(S);
