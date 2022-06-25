@@ -1001,7 +1001,7 @@ begin
 
   FreeMem(Content);
 
-  Exit(True);
+  Exit;
 end;
 
 function TMachine.UnrecognizedWord(S, SEnd: PAnsiChar): Boolean;
