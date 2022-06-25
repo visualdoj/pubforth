@@ -384,6 +384,9 @@ begin
   A('  --backend <BACKEND>');
   L('     Use the specified backend. By default will try detect backend by output file extension');
   L('');
+  L('  --backend-compile');
+  L('     Call external compiler for producing executable instead of source');
+  L('');
   L('  --backend-include <DIRECTORY>');
   L('     For FASM backend: sets INCLUDE environment variable');
   L('');
