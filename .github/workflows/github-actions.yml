@@ -1,7 +1,7 @@
 name: Autobuild PubForth
 on: [push, pull_request]
 jobs:
-  GitHub-Actions:
+  Build:
     strategy:
       fail-fast: false
       matrix:
@@ -13,6 +13,8 @@ jobs:
           - os: macos-latest
             package_ext: tar.gz
     runs-on: ${{ matrix.os }}
+    outputs:
+      version: ${{ steps.pubforth_version.outputs.version }}
     steps:
       - run: echo "☁️ This job is now running on a ${{ runner.os }} server hosted by GitHub!"
 
