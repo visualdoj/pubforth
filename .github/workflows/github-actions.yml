@@ -77,6 +77,7 @@ jobs:
             bin/pubforth --version
             echo "::set-output name=version::$(bin/pubforth --short-version)"
             echo "::set-output name=package::pubforth-$(bin/pubforth --short-version)-${{ runner.os }}-x64"
+            echo "::set-output name=asset::pubforth-${{ runner.os }}-x64"
 
       - name: 📦 Make package
         working-directory: ${{ github.workspace }}
@@ -115,4 +116,5 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           file: "${{ steps.pubforth_version.outputs.package }}.${{ matrix.package_ext }}"
+          asset_name: "${{ steps.pubforth_version.outputs.asset }}.${{ matrix.package_ext }}"
           file_glob: true
