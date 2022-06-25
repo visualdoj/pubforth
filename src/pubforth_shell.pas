@@ -124,6 +124,8 @@ begin
   Result := Process.ExitCode <> 0;
 
   Process.Free;
+
+  Exit(True);
 end;
 
 function ExecutePipe(Pipe, PipeEnd: PPAnsiChar; Env: PEnv): Boolean;

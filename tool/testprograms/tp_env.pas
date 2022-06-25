@@ -28,6 +28,7 @@ public
   function STDIN: AnsiString;
   function TESTDIR: AnsiString;
   function TESTNAME: AnsiString;
+  function TESTOUT: AnsiString;
 end;
 
 procedure OverrideEnv(Process: TProcess;
@@ -110,6 +111,11 @@ end;
 function TEnv.TESTNAME: AnsiString;
 begin
   Exit(Get('TESTNAME'));
+end;
+
+function TEnv.TESTOUT: AnsiString;
+begin
+  Exit(Get('TESTOUT'));
 end;
 
 procedure OverrideEnv(Process: TProcess;

@@ -45,6 +45,7 @@ TPubForthCLArgs = object
   Repl: Boolean;
   NoRepl: Boolean;
   Backend: AnsiString;
+  BackendCompile: Boolean;
   BackendInclude: AnsiString;
   OutputFileName: AnsiString;
   Main: AnsiString;
@@ -144,6 +145,7 @@ begin
   Experimental := False;
   Test := False;
   Backend := '';
+  BackendCompile := False;
   BackendInclude := '';
   OutputFileName := '';
   Main := '';
@@ -195,6 +197,8 @@ begin
         Exit(False);
       end;
       Backend := ParamStr(I);
+    end else if ParamStr(I) = '--backend-compile' then begin
+      BackendCompile := True;
     end else if ParamStr(I) = '--backend-include' then begin
       Inc(I);
       if I > ParamCount then begin

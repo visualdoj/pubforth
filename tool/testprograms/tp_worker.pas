@@ -335,6 +335,9 @@ begin
           Task^.Verdict := 'SUCCESS';
       end else begin
         if Process.ExitCode <> 0 then begin
+          CancelStatusLine;
+          PrintError(['Bad exit code: ', TestDir, ' ', CommandToString(Command)]);
+          RestoreStatusLine;
           Task^.Ok := False;
           Task^.Verdict := 'PREPARATION_FAILED';
           Finished := True;

@@ -100,6 +100,7 @@ function  TBackendPascal.Translate(Task: PTranslationTask): Boolean;
 begin
   OpenTextFile(Task^.OutputFileName);
   WriteLine('begin');
+  WriteLine('  Writeln(''Hello world!'');');
   WriteLine('end.');
   CloseTextFile;
 
@@ -115,7 +116,6 @@ function  TBackendPascal.Compile(Task: PTranslationTask): Boolean;
 var
   Cmd: array of PAnsiChar;
 begin
-  Writeln('Compiling');
   SetLength(Cmd, 4);
   Cmd[0] := 'fpc';
   Cmd[1] := PAnsiChar(Task^.OutputFileName);

@@ -4,6 +4,7 @@ usage :
 	@echo make build
 	@echo make test
 	@echo make clean
+	@echo make test_fpc
 
 .SUFFIXES:
 
@@ -52,7 +53,12 @@ build : prepare_build build_tools .build bin
 	cd src && fpc $(FPC_FLAGS) -Sew -FE../bin -FU../.build pubforth.pas
 
 test : $(TOOL_TESTPROGRAMS)
-	$(TOOL_TESTPROGRAMS) -l tests.list -d .build
+	$(MKDIRP) .test || $(PASS)
+	$(TOOL_TESTPROGRAMS) -l tests.list -d .test
+
+test_fpc : $(TOOL_TESTPROGRAMS)
+	$(MKDIRP) .test || $(PASS)
+	$(TOOL_TESTPROGRAMS) -l tests_fpc.list -d .test
 
 
 ifneq ($(wildcard ../pubforth_external/Makefile.inc),)

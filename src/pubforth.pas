@@ -103,6 +103,23 @@ begin
   end;
 end;
 
+function ReplaceExt(const FileName: AnsiString; const NewExt: AnsiString): AnsiString;
+var
+  I: Int32;
+begin
+  I := Length(FileName);
+  while I > 0 do begin
+    if FileName[I] = '.' then
+      break;
+    Dec(I);
+  end;
+
+  if I <= 0 then begin
+    Exit(FileName + NewExt);
+  end else
+    Exit(Copy(FileName, 1, I - 1) + NewExt);
+end;
+
 begin
   Args.Init;
 
@@ -211,7 +228,13 @@ begin
 
     TranslationTask.InitDefaults;
     TranslationTask.BackendName := BackendName;
-    TranslationTask.OutputFileName := Args.OutputFileName;
+
+    if Args.BackendCompile then begin
+      TranslationTask.OutputFileName := ReplaceExt(Args.OutputFileName, '.pp'); // TODO temp filename
+      TranslationTask.BinaryFileName := Args.OutputFileName;
+    end else begin
+      TranslationTask.OutputFileName := Args.OutputFileName;
+    end;
 
     TranslationTask.TargetOS := Args.OS;
     if TranslationTask.TargetOS = '' then begin

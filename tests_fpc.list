@@ -1,0 +1,5 @@
+#
+#   Tests for compiling with FPC
+#
+
+cd test/hello && ../../bin/pubforth hello.fs --backend pascal --backend-compile -o hello.fpc.exe && ./hello.fpc.exe

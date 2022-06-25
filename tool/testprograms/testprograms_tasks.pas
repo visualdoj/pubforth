@@ -250,7 +250,9 @@ begin
   Task^.DiffFileName := TestProgramsParams.ArtifactsDir + Task^.TestName + '.diff';
   Task^.ResultFileName := TestProgramsParams.ArtifactsDir + Task^.TestName + '.res';
   Task^.CanFileName := Task^.Env.TESTDIR + '/' + Task^.TestName + '.can';
-  if Task^.Env.TESTNAME <> '' then begin
+  if Task^.Env.TESTOUT <> '' then begin
+    Task^.ActualOutputFileName := Task^.Env.TESTDIR + '/' + Task^.Env.TESTOUT;
+  end else if Task^.Env.TESTNAME <> '' then begin
     Task^.ActualOutputFileName := Task^.Env.TESTDIR + '/' + Task^.TestName;
   end else
     Task^.ActualOutputFileName := Task^.StdoutFileName;
