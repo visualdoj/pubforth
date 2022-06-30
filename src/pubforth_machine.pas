@@ -112,7 +112,7 @@ PDictionary = ^TDictionary;
 PDictionaryRecord = ^TDictionaryRecord;
 PMachine = ^TMachine;
 
-TSemantic = function (Machine: PMachine): Boolean;
+TSemantic = function (Machine: PMachine; Param: Pointer): Boolean;
 
 TDictionaryRecord = object
   Name: AnsiString;
@@ -120,6 +120,7 @@ TDictionaryRecord = object
   Semantic: TSemantic;
   Immediate: Boolean;
   Opcode: Int32;
+  Code: PUInt8;
 end;
 
 TDictionary = object
@@ -195,8 +196,10 @@ public
   function  StackDepth: Int32; inline;
 
   procedure Compile(Opcode: UInt8);
+  procedure CompileN(N: TValueN);
   procedure CompileCall(Xt: PDictionaryRecord);
   procedure CompileLiteral(Number: TValueN);
+  procedure CompileLiteralStr(OpCode: UInt8; S, SEnd: PAnsiChar);
 
   function IsInterpreting: Boolean; inline;
 
@@ -280,7 +283,16 @@ implementation
 //  For more information, please refer to <http://unlicense.org/>
 //  ---------------------------------------------------------------------------
 
+function SliceToAnsiString(S, SEnd: PAnsiChar): AnsiString;
+begin
+  SetLength(Result, SEnd - S);
+  Move(S^, Result[1], SEnd - S);
+end;
+
 function RunVM(Code: PUInt8; Machine: PMachine): Boolean;
+var
+  Len: TValueN;
+  Definition: PDictionaryRecord;
 begin
   while True do begin
     case Code^ of
@@ -293,7 +305,29 @@ begin
                 end;
     OP_CR: Writeln;
     OP_CALL: begin
-               Writeln('TODO call ', PDictionaryRecord(Pointer(Code + 1)^)^.Name);
+               Definition := PDictionaryRecord(Pointer(Code + 1)^);
+               if Machine^.IsInterpreting then begin
+                 if @Definition^.Semantic <> nil then begin
+                   if not Definition^.Semantic(Machine, Definition^.Code) then
+                     Exit(False);
+                 end else
+                   Writeln(stderr, 'ERROR no semantic for ', Definition^.Name);
+               end else begin
+                 if Definition^.Immediate then begin
+                   if @Definition^.Semantic <> nil then begin
+                     if not Definition^.Semantic(Machine, Definition^.Code) then
+                       Exit(False);
+                   end else
+                     Writeln(stderr, 'ERROR no semantic for ', Definition^.Name);
+                 end else begin
+                   if Definition^.Opcode >= 0 then begin
+                     Machine^.Compile(Definition^.Opcode);
+                   end else begin
+                     Machine^.CompileCall(Definition);
+                   end;
+                 end;
+               end;
+
                Inc(Code, 1 + SizeOf(PDictionaryRecord));
                continue;
              end;
@@ -307,8 +341,15 @@ begin
               Exit(True);
             end;
     OP_RETURN: Exit(True);
+    OP_PRINT_LITERAL_STR: begin
+              Len := TValueN(Pointer(Code + 1)^);
+              Inc(Code, 1 + SizeOf(TValueN));
+              Write(SliceToAnsiString(PAnsiChar(Code), PAnsiChar(Code + Len)));
+              Inc(Code, Len);
+              continue;
+            end;
     else
-      Exit(Machine^.Error('code is invalid'));
+      Exit(Machine^.Error('unknown opcode ' + HexStr(Code^, 2)));
     end;
     Inc(Code);
   end;
@@ -342,6 +383,7 @@ begin
   Result^.Semantic := nil;
   Result^.Immediate := False;
   Result^.Opcode := -1;
+  Result^.Code := nil;
   FLast := Result;
 end;
 
@@ -400,7 +442,7 @@ begin
   SetTerminalColor(TERMINAL_COLOR_DEFAULT);
 end;
 
-function f_CR(Machine: PMachine): Boolean;
+function f_CR(Machine: PMachine; Param: Pointer): Boolean;
 begin
   Writeln;
   Exit(True);
@@ -422,13 +464,20 @@ begin
   Exit(S);
 end;
 
-function f_ColonDefinition(Machine: PMachine): Boolean;
+function SkipToDoubleQuote(S, SEnd: PAnsiChar): PAnsiChar; inline;
 begin
-  Writeln('Colon definition');
-  Exit(True);
+  while (S < SEnd) and (S^ <> '"') do
+    Inc(S);
+
+  Exit(S);
 end;
 
-function f_Colon(Machine: PMachine): Boolean;
+function f_ColonDefinition(Machine: PMachine; Param: Pointer): Boolean;
+begin
+  Exit(RunVM(Param, Machine));
+end;
+
+function f_Colon(Machine: PMachine; Param: Pointer): Boolean;
 var
   NameEnd: PAnsiChar;
   Rec: PDictionaryRecord;
@@ -440,13 +489,14 @@ begin
 
   Rec := Machine^.FDictionary.CreateDifinition(Machine^.FSource, NameEnd);
   Rec^.Semantic := @f_ColonDefinition;
+  Rec^.Code := Machine^.FCode;
 
   Machine^.FSource := NameEnd + 1;
   Machine^.FState := STATE_COMPILE;
   Exit(True);
 end;
 
-function f_Semicolon(Machine: PMachine): Boolean;
+function f_Semicolon(Machine: PMachine; Param: Pointer): Boolean;
 begin
   if Machine^.IsInterpreting then
     Exit(Machine^.Error('no interpreatation semantic for ;'));
@@ -454,18 +504,17 @@ begin
   Machine^.Compile(OP_RETURN);
 
   Machine^.FState := STATE_INTERPRETING;
-  Writeln('Generated ', Machine^.FDictionary.FLast^.Name);
   Exit(True);
 end;
 
-function f_Dot(Machine: PMachine): Boolean;
+function f_Dot(Machine: PMachine; Param: Pointer): Boolean;
 begin
   Write(TValueN(Machine^.FStack^), ' ');
   WDrop(Machine^.FStack);
   Exit(True);
 end;
 
-function f_Words(Machine: PMachine): Boolean;
+function f_Words(Machine: PMachine; Param: Pointer): Boolean;
 var
   Rec: PDictionaryRecord;
 begin
@@ -478,7 +527,28 @@ begin
   Exit(True);
 end;
 
-function f_BYE(Machine: PMachine): Boolean;
+function f_PrintLiteralStr(Machine: PMachine; Param: Pointer): Boolean;
+var
+  LiteralStrEnd: PAnsiChar;
+begin
+  LiteralStrEnd := SkipToDoubleQuote(Machine^.FSource, Machine^.FSourceEnd);
+  // TODO check for source end?
+
+  if Machine^.IsInterpreting then begin
+    Write(SliceToAnsiString(Machine^.FSource, LiteralStrEnd));
+  end else begin
+    Machine^.CompileLiteralStr(OP_PRINT_LITERAL_STR, Machine^.FSource, LiteralStrEnd);
+  end;
+
+  if LiteralStrEnd >= Machine^.FSourceEnd then begin
+    Machine^.FSource := Machine^.FSourceEnd;
+  end else
+    Machine^.FSource := LiteralStrEnd + 1;
+
+  Exit(True);
+end;
+
+function f_BYE(Machine: PMachine; Param: Pointer): Boolean;
 begin
   Machine^.Bye := True;
   Exit(True);
@@ -501,19 +571,13 @@ begin
   Exit(SEnd);
 end;
 
-function f_SingleLineComment(Machine: PMachine): Boolean;
+function f_SingleLineComment(Machine: PMachine; Param: Pointer): Boolean;
 begin
   Machine^.FSource := SkipLine(Machine^.FSource, Machine^.FSourceEnd);
   Exit(True);
 end;
 
-function SliceToAnsiString(S, SEnd: PAnsiChar): AnsiString;
-begin
-  SetLength(Result, SEnd - S);
-  Move(S^, Result[1], SEnd - S);
-end;
-
-function f_BeginTest(Machine: PMachine): Boolean;
+function f_BeginTest(Machine: PMachine; Param: Pointer): Boolean;
 begin
   Machine^.FTestStartStack  := Machine^.FStack;
   Machine^.FTestStartDepth  := Machine^.StackDepth;
@@ -523,7 +587,7 @@ begin
   Exit(True);
 end;
 
-function f_TestCheckpoint(Machine: PMachine): Boolean;
+function f_TestCheckpoint(Machine: PMachine; Param: Pointer): Boolean;
 var
   I: Int32;
 begin
@@ -538,7 +602,7 @@ begin
   Exit(True);
 end;
 
-function f_EndTest(Machine: PMachine): Boolean;
+function f_EndTest(Machine: PMachine; Param: Pointer): Boolean;
 var
   I: Int32;
 begin
@@ -569,7 +633,7 @@ begin
   Exit(SEnd);
 end;
 
-function f_MultiLineComment(Machine: PMachine): Boolean;
+function f_MultiLineComment(Machine: PMachine; Param: Pointer): Boolean;
 begin
   Machine^.FSource := SkipToCloseRoundBracketOrEOS(Machine^.FSource, Machine^.FSourceEnd);
   Exit(True);
@@ -652,6 +716,7 @@ begin
   RegImmediate(';',       @f_Semicolon);
   RegIntrinsic('.',       @f_Dot, OP_DOT);
   RegIntrinsic('WORDS',   @f_Words, OP_WORDS);
+  RegImmediate('."',      @f_PrintLiteralStr);
 end;
 
 procedure TMachine.ConfigureREPL;
@@ -673,6 +738,12 @@ begin
   Inc(FCode);
 end;
 
+procedure TMachine.CompileN(N: TValueN);
+begin
+  Move(N, Pointer(FCode)^, SizeOf(TValueN));
+  Inc(FCode, SizeOf(TValueN));
+end;
+
 procedure TMachine.CompileCall(Xt: PDictionaryRecord);
 begin
   Compile(OP_CALL);
@@ -685,6 +756,14 @@ begin
   Compile(OP_LITERAL);
   Move(Number, Pointer(FCode)^, SizeOf(TValueN));
   Inc(FCode, SizeOf(TValueN));
+end;
+
+procedure TMachine.CompileLiteralStr(OpCode: UInt8; S, SEnd: PAnsiChar);
+begin
+  Compile(OpCode);
+  CompileN(SEnd - S);
+  Move(S^, Pointer(FCode)^, SEnd - S);
+  Inc(FCode, SEnd - S); // TODO alignment
 end;
 
 function TMachine.IsInterpreting: Boolean; inline;
@@ -939,14 +1018,14 @@ begin
     if FDictionary.Find(S, NameEnd, Definition) then begin
       if IsInterpreting then begin
         if @Definition^.Semantic <> nil then begin
-          if not Definition^.Semantic(@Self) then
+          if not Definition^.Semantic(@Self, Definition^.Code) then
             Exit(False);
         end else
           Writeln(stderr, 'ERROR no semantic for ', Definition^.Name);
       end else begin
         if Definition^.Immediate then begin
           if @Definition^.Semantic <> nil then begin
-            if not Definition^.Semantic(@Self) then
+            if not Definition^.Semantic(@Self, Definition^.Code) then
               Exit(False);
           end else
             Writeln(stderr, 'ERROR no semantic for ', Definition^.Name);

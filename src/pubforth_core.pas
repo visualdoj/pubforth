@@ -33,6 +33,7 @@ const
   OP_BYE          = 6;
   OP_RETURN       = 7;
   OP_WORDS        = 8;
+  OP_PRINT_LITERAL_STR    = 9;
 
 
 implementation
