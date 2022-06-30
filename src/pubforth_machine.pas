@@ -3,6 +3,7 @@ unit pubforth_machine;
 // License: Public domain or MIT
 
 {$MODE FPC}
+{$MODESWITCH ADVANCEDRECORDS}
 {$MODESWITCH DEFAULTPARAMETERS}
 {$MODESWITCH OUT}
 {$MODESWITCH RESULT}
@@ -107,6 +108,10 @@ const
   STATE_INTERPRETING  = 0;
   STATE_COMPILE       = -1;
 
+  DEFINITION_PROCESSED    = 1 shl 0;
+  DEFINITION_REACHABLE    = 1 shl 1;
+  DEFINITION_COLON        = 1 shl 2;
+
 type
 PDictionary = ^TDictionary;
 PDictionaryRecord = ^TDictionaryRecord;
@@ -121,6 +126,10 @@ TDictionaryRecord = object
   Immediate: Boolean;
   Opcode: Int32;
   Code: PUInt8;
+  Flags: UInt8;
+
+  function IsReachable: Boolean; inline;
+  function IsColonDefinition: Boolean; inline;
 end;
 
 TDictionary = object
@@ -128,6 +137,8 @@ private
   FLast: PDictionaryRecord;
 
 public
+  ReachableOpcodes: array[0 .. 255] of Boolean;
+
   procedure Init;
   procedure Done;
 
@@ -139,6 +150,16 @@ public
   function Find(const Name: AnsiString; out Rec: PDictionaryRecord): Boolean;
   function Find(Name, NameEnd: PAnsiChar; out Rec: PDictionaryRecord): Boolean;
       // Returns False if not found
+
+  procedure ClearReachable;
+      // Clears DEFINITION_PROCESSED and DEFINITION_REACHABLE flags
+      // for all definitions.
+
+  procedure MarkReachable(Definition: PDictionaryRecord);
+      // Marks all reachable definitions from the Definition with flag
+      // DEFINITION_REACHABLE
+
+  property Last: PDictionaryRecord read FLast;
 end;
 
 TMachine = object
@@ -203,6 +224,8 @@ public
 
   function IsInterpreting: Boolean; inline;
 
+  function GetDictionary: PDictionary;
+
   function ParseAnyNum(S, SEnd: PAnsiChar; out Num: TValueN): Boolean; inline;
       // <anynum>   :=  { <BASEnum> | <decnum> | <hexnum> | <binnum> | <cnum> }
       // <BASEnum>  :=  [-]<bdigit><bdigit>*
@@ -227,6 +250,7 @@ function IsGraphicCharacter(C: TValueChar): Boolean; inline;
       //  Minimum set of visible characters.
       //  Other graphic characters are implementation-detail.
 
+function SliceToAnsiString(S, SEnd: PAnsiChar): AnsiString;
 
 
 
@@ -362,6 +386,21 @@ begin
   Exit(C in [32..126]);
 end;
 
+function f_ColonDefinition(Machine: PMachine; Param: Pointer): Boolean;
+begin
+  Exit(RunVM(Param, Machine));
+end;
+
+function TDictionaryRecord.IsReachable: Boolean; inline;
+begin
+  Exit(Flags and DEFINITION_REACHABLE <> 0);
+end;
+
+function TDictionaryRecord.IsColonDefinition: Boolean; inline;
+begin
+  Exit(Flags and DEFINITION_COLON <> 0);
+end;
+
 procedure TDictionary.Init;
 begin
   FLast := nil;
@@ -427,6 +466,38 @@ begin
   Exit(False);
 end;
 
+procedure TDictionary.ClearReachable;
+var
+  It: PDictionaryRecord;
+  I: Int32;
+begin
+  It := FLast;
+  while It <> nil do begin
+    It^.Flags := It^.Flags and not UInt8(DEFINITION_PROCESSED or DEFINITION_REACHABLE);
+    It := It^.Next;
+  end;
+
+  for I := 0 to High(ReachableOpcodes) do
+    ReachableOpcodes[I] := False;
+end;
+
+procedure TDictionary.MarkReachable(Definition: PDictionaryRecord);
+var
+  {$I pubforth_iterate_code_variables.inc};
+begin
+  if Definition^.Flags and DEFINITION_PROCESSED <> 0 then
+    Exit;
+
+  Definition^.Flags := Definition^.Flags or DEFINITION_PROCESSED or DEFINITION_REACHABLE;
+  if Definition^.Semantic = @f_ColonDefinition then begin
+    {$I pubforth_iterate_code_begin.inc}
+      OP_CALL: MarkReachable({$I pubforth_iterate_code_arg_xt.inc});
+      else
+        ReachableOpcodes[{$I pubforth_iterate_code_opcode.inc}] := True;
+    {$I pubforth_iterate_code_end.inc}
+  end;
+end;
+
 function TMachine.Error(const ErrorMsg: AnsiString): Boolean;
 begin
   SetTerminalColor(TERMINAL_COLOR_BRIGHT_RED);
@@ -472,11 +543,6 @@ begin
   Exit(S);
 end;
 
-function f_ColonDefinition(Machine: PMachine; Param: Pointer): Boolean;
-begin
-  Exit(RunVM(Param, Machine));
-end;
-
 function f_Colon(Machine: PMachine; Param: Pointer): Boolean;
 var
   NameEnd: PAnsiChar;
@@ -490,6 +556,7 @@ begin
   Rec := Machine^.FDictionary.CreateDifinition(Machine^.FSource, NameEnd);
   Rec^.Semantic := @f_ColonDefinition;
   Rec^.Code := Machine^.FCode;
+  Rec^.Flags := DEFINITION_COLON;
 
   Machine^.FSource := NameEnd + 1;
   Machine^.FState := STATE_COMPILE;
@@ -502,6 +569,7 @@ begin
     Exit(Machine^.Error('no interpreatation semantic for ;'));
 
   Machine^.Compile(OP_RETURN);
+  Machine^.Compile(OP_END);
 
   Machine^.FState := STATE_INTERPRETING;
   Exit(True);
@@ -769,6 +837,11 @@ end;
 function TMachine.IsInterpreting: Boolean; inline;
 begin
   Exit(FState = 0);
+end;
+
+function TMachine.GetDictionary: PDictionary;
+begin
+  Exit(@FDictionary);
 end;
 
 function DigitToNumber(C: AnsiChar): Int32;

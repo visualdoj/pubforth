@@ -8,6 +8,7 @@ program pubforth;
 {$MODESWITCH RESULT}
 
 uses
+  dterm,
   //pubforth_core,
   pubforth_words,
   //pubforth_doc_parser,
@@ -72,7 +73,9 @@ uses
 
 procedure PrintError(const ErrorMsg: AnsiString);
 begin
+  SetTerminalColor(TERMINAL_COLOR_BRIGHT_RED);
   Writeln(stderr, ErrorMsg);
+  ResetTerminalColor;
 end;
 
 function EndsWith(const S: AnsiString; const Ending: AnsiString): Boolean;
@@ -261,6 +264,15 @@ begin
     end;
 
     TranslationTask.Include := Args.BackendInclude;
+
+    TranslationTask.Dictionary := Machine.GetDictionary;
+    if not TranslationTask.Dictionary^.Find('MAIN', TranslationTask.Main) then begin
+      PrintError('MAIN is not defined');
+      Halt(1);
+    end;
+
+    TranslationTask.Dictionary^.ClearReachable;
+    TranslationTask.Dictionary^.MarkReachable(TranslationTask.Main);
 
     if not Backend^.Translate(@TranslationTask) then
       Halt(1);

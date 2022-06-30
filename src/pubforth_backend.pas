@@ -70,6 +70,7 @@ function  FindBackend(const Name: AnsiString): PBackend;
 
 procedure PrintBackendsList;
 
+function IntToStr(I: Int32): AnsiString;
 
 
 implementation
@@ -248,6 +249,11 @@ begin
 
     LastBackend := Next;
   end;
+end;
+
+function IntToStr(I: Int32): AnsiString;
+begin
+  Str(I, Result);
 end;
 
 end.

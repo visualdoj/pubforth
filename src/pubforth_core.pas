@@ -25,15 +25,16 @@ const
 
 const
   OP_NOP          = 0;
-  OP_LITERAL      = 1;
-  OP_CR           = 2;
-  OP_CALL         = 3;
-  OP_ENTER        = 4;
-  OP_DOT          = 5;
-  OP_BYE          = 6;
-  OP_RETURN       = 7;
-  OP_WORDS        = 8;
-  OP_PRINT_LITERAL_STR    = 9;
+  OP_END          = 1;
+  OP_LITERAL      = 2;
+  OP_CR           = 3;
+  OP_CALL         = 4;
+  OP_ENTER        = 5;
+  OP_DOT          = 6;
+  OP_BYE          = 7;
+  OP_RETURN       = 8;
+  OP_WORDS        = 9;
+  OP_PRINT_LITERAL_STR    = 10;
 
 
 implementation

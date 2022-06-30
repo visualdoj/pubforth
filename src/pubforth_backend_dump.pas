@@ -15,6 +15,8 @@ unit pubforth_backend_dump;
 interface
 
 uses
+  pubforth_core,
+  pubforth_machine,
   pubforth_backend;
 
 
@@ -96,9 +98,46 @@ begin
 end;
 
 function  TBackendDump.Translate(Task: PTranslationTask): Boolean;
+var
+  {$I pubforth_iterate_code_variables.inc};
+  Dictionary: PDictionary;
+  I: Int32;
+  It, Definition: PDictionaryRecord;
 begin
   OpenTextFile(Task^.OutputFileName);
-  WriteLine('Hello world');
+
+  Dictionary := Task^.Dictionary;
+  for I := 0 to 255 do begin
+    if Dictionary^.ReachableOpcodes[I] then
+      WriteLine('OPCODE ' + IntToStr(I));
+  end;
+
+  // Colon definitions
+  It := Dictionary^.Last;
+  while It <> nil do begin
+    if It^.IsReachable and It^.IsColonDefinition then begin
+      WriteLine('COLON ' + It^.Name);
+      Definition := It;
+      {$I pubforth_iterate_code_begin.inc}
+        OP_NOP:     WriteLine('  NOP');
+        OP_END:     WriteLine('  END');
+        OP_LITERAL: WriteLine('  LITERAL' + IntToStr({$I pubforth_iterate_code_arg_n.inc}));
+        OP_CR:      WriteLine('  CR');
+        OP_CALL:    WriteLine('  CALL ' + {$I pubforth_iterate_code_arg_xt.inc}^.Name);
+        OP_ENTER:   WriteLine('  ENTER');
+        OP_DOT:     WriteLine('  .');
+        OP_BYE:     WriteLine('  BYE');
+        OP_RETURN:  WriteLine('  RETURN');
+        OP_WORDS:   WriteLine('  WORDS');
+        OP_PRINT_LITERAL_STR:   WriteLine('  ." ' + SliceToAnsiString({$I pubforth_iterate_code_arg_slice.inc}));
+        else
+          WriteLine('  ' + HexStr({$I pubforth_iterate_code_opcode.inc}, 2));
+      {$I pubforth_iterate_code_end.inc}
+    end;
+
+    It := It^.Next;
+  end;
+
   CloseTextFile;
   Exit(True);
 end;
