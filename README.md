@@ -22,456 +22,456 @@ One day - one word. 💪 *(Not mandatory...)*
 - [x] 2022.06.23 [PubForth 0.0.0: Zero-day release with effectively no words supported](https://github.com/visualdoj/pubforth/releases/tag/v0.0.0)
 - [x] ~~2022.06.24 `\` "backslash"~~
 - [x] ~~2022.06.25 `(` "paren"~~
-- [ ] 2022.06.26 `:` "colon"
-- [ ] 2022.06.27 `;` "semicolon"
-- [ ] 2022.06.28 `."` "dot-quote"
-- [ ] 2022.06.29 `CR`
+- [x] ~~2022.06.30 `:` "colon"~~
+- [x] ~~2022.06.30 `;` "semicolon"~~
+- [x] ~~2022.06.30 `."` "dot-quote"~~
+- [x] ~~2022.06.30 `CR`~~
 - [ ] 202?.??.?? `PubForth 0.1.0`: "Hello world" starter pack
-- [ ] 2022.06.30 `.` "dot"
-- [ ] 2022.07.01 `SWAP`
-- [ ] 2022.07.02 `OVER`
-- [ ] 2022.07.03 `DROP`
-- [ ] 2022.07.04 `DUP`
-- [ ] 2022.07.05 `NIP`
-- [ ] 2022.07.06 `ROT`
-- [ ] 2022.07.07 `+` "plus"
-- [ ] 2022.07.08 `-` "minus"
-- [ ] 2022.07.09 `*` "star"
-- [ ] 2022.07.10 `/` "slash"
-- [ ] 2022.07.11 `0<` "zero-less"
-- [ ] 2022.07.12 `0=` "zero-equals"
-- [ ] 2022.07.13 `0<>` "zero-not-equals"
-- [ ] 2022.07.14 `0>` "zero-greater"
-- [ ] 2022.07.15 `1+` "one-plus"
-- [ ] 2022.07.16 `1-` "one-minus"
-- [ ] 2022.07.17 `<` "less-than"
-- [ ] 2022.07.18 `>` "greater-than"
-- [ ] 2022.07.19 `=` "equals"
-- [ ] 2022.07.20 `<>` "not-equals"
-- [ ] 2022.07.21 `M*` "m-star"
-- [ ] 2022.07.22 `*/` "star-slash"
-- [ ] 2022.07.23 `/MOD` "slash-mod"
-- [ ] 2022.07.24 `*/MOD` "star-slash-mod"
-- [ ] 2022.07.25 `FM/MOD` "f-m-slash-mod"
-- [ ] 2022.07.26 `SM/REM` "s-m-slash-rem"
-- [ ] 2022.07.27 `MAX`
-- [ ] 2022.07.28 `MIN`
-- [ ] 2022.07.29 `MOD`
-- [ ] 2022.07.30 `?DUP` "question-dupe"
-- [ ] 2022.07.31 `NEGATE`
-- [ ] 2022.08.01 `FALSE`
-- [ ] 2022.08.02 `TRUE`
-- [ ] 2022.08.03 `INVERT`
-- [ ] 2022.08.04 `AND`
-- [ ] 2022.08.05 `OR`
-- [ ] 2022.08.06 `XOR`
-- [ ] 2022.08.07 `LSHIFT`
-- [ ] 2022.08.08 `RSHIFT`
-- [ ] 2022.08.09 `U.` "u-dot"
-- [ ] 2022.08.10 `U<` "u-less-than"
-- [ ] 2022.08.11 `UM*` "u-m-star"
-- [ ] 2022.08.12 `UM/MOD` "u-m-slash-mod"
-- [ ] 2022.08.13 `U>` "u-greater-than"
-- [ ] 2022.08.14 `BASE`
-- [ ] 2022.08.15 `DECIMAL`
-- [ ] 2022.08.16 `HEX`
+- [ ] 2022.07.01 `.` "dot"
+- [ ] 2022.07.02 `SWAP`
+- [ ] 2022.07.03 `OVER`
+- [ ] 2022.07.04 `DROP`
+- [ ] 2022.07.05 `DUP`
+- [ ] 2022.07.06 `NIP`
+- [ ] 2022.07.07 `ROT`
+- [ ] 2022.07.08 `+` "plus"
+- [ ] 2022.07.09 `-` "minus"
+- [ ] 2022.07.10 `*` "star"
+- [ ] 2022.07.11 `/` "slash"
+- [ ] 2022.07.12 `0<` "zero-less"
+- [ ] 2022.07.13 `0=` "zero-equals"
+- [ ] 2022.07.14 `0<>` "zero-not-equals"
+- [ ] 2022.07.15 `0>` "zero-greater"
+- [ ] 2022.07.16 `1+` "one-plus"
+- [ ] 2022.07.17 `1-` "one-minus"
+- [ ] 2022.07.18 `<` "less-than"
+- [ ] 2022.07.19 `>` "greater-than"
+- [ ] 2022.07.20 `=` "equals"
+- [ ] 2022.07.21 `<>` "not-equals"
+- [ ] 2022.07.22 `M*` "m-star"
+- [ ] 2022.07.23 `*/` "star-slash"
+- [ ] 2022.07.24 `/MOD` "slash-mod"
+- [ ] 2022.07.25 `*/MOD` "star-slash-mod"
+- [ ] 2022.07.26 `FM/MOD` "f-m-slash-mod"
+- [ ] 2022.07.27 `SM/REM` "s-m-slash-rem"
+- [ ] 2022.07.28 `MAX`
+- [ ] 2022.07.29 `MIN`
+- [ ] 2022.07.30 `MOD`
+- [ ] 2022.07.31 `?DUP` "question-dupe"
+- [ ] 2022.08.01 `NEGATE`
+- [ ] 2022.08.02 `FALSE`
+- [ ] 2022.08.03 `TRUE`
+- [ ] 2022.08.04 `INVERT`
+- [ ] 2022.08.05 `AND`
+- [ ] 2022.08.06 `OR`
+- [ ] 2022.08.07 `XOR`
+- [ ] 2022.08.08 `LSHIFT`
+- [ ] 2022.08.09 `RSHIFT`
+- [ ] 2022.08.10 `U.` "u-dot"
+- [ ] 2022.08.11 `U<` "u-less-than"
+- [ ] 2022.08.12 `UM*` "u-m-star"
+- [ ] 2022.08.13 `UM/MOD` "u-m-slash-mod"
+- [ ] 2022.08.14 `U>` "u-greater-than"
+- [ ] 2022.08.15 `BASE`
+- [ ] 2022.08.16 `DECIMAL`
+- [ ] 2022.08.17 `HEX`
 - [ ] 202?.??.?? `PubForth 0.2.0`: "Stack calculator" edition
-- [ ] 2022.08.17 `!` "store"
-- [ ] 2022.08.18 `#` "number-sign"
-- [ ] 2022.08.19 `#>` "number-sign-greater"
-- [ ] 2022.08.20 `#S` "number-sign-s"
-- [ ] 2022.08.21 `'` "tick"
-- [ ] 2022.08.22 `+!` "plus-store"
-- [ ] 2022.08.23 `+LOOP` "plus-loop"
-- [ ] 2022.08.24 `,` "comma"
-- [ ] 2022.08.25 `2!` "two-store"
-- [ ] 2022.08.26 `2*` "two-star"
-- [ ] 2022.08.27 `2/` "two-slash"
-- [ ] 2022.08.28 `2@` "two-fetch"
-- [ ] 2022.08.29 `2DROP` "two-drop"
-- [ ] 2022.08.30 `2DUP` "two-dup"
-- [ ] 2022.08.31 `2OVER` "two-over"
-- [ ] 2022.09.01 `2SWAP` "two-swap"
-- [ ] 2022.09.02 `<#` "less-number-sign"
-- [ ] 2022.09.03 `>BODY` "to-body"
-- [ ] 2022.09.04 `>IN` "to-in"
-- [ ] 2022.09.05 `>NUMBER` "to-number"
-- [ ] 2022.09.06 `>R` "to-r"
-- [ ] 2022.09.07 `@` "fetch"
-- [ ] 2022.09.08 `ABORT`
-- [ ] 2022.09.09 `ABORT"`
-- [ ] 2022.09.10 `ABS`
-- [ ] 2022.09.11 `ACCEPT`
-- [ ] 2022.09.12 `ALIGN`
-- [ ] 2022.09.13 `ALIGNED`
-- [ ] 2022.09.14 `ALLOT`
-- [ ] 2022.09.15 `BEGIN`
-- [ ] 2022.09.16 `BL`
-- [ ] 2022.09.17 `C!` "c-store"
-- [ ] 2022.09.18 `C,` "c-comma"
-- [ ] 2022.09.19 `C@` "c-fetch"
-- [ ] 2022.09.20 `CELL+` "cell-plus"
-- [ ] 2022.09.21 `CELLS`
-- [ ] 2022.09.22 `CHAR`
-- [ ] 2022.09.23 `CHAR+` "char-plus"
-- [ ] 2022.09.24 `CHARS`
-- [ ] 2022.09.25 `CONSTANT`
-- [ ] 2022.09.26 `COUNT`
-- [ ] 2022.09.27 `CREATE`
-- [ ] 2022.09.28 `DEPTH`
-- [ ] 2022.09.29 `DO`
-- [ ] 2022.09.30 `DOES>` "does"
-- [ ] 2022.10.01 `ELSE`
-- [ ] 2022.10.02 `EMIT`
-- [ ] 2022.10.03 `ENVIRONMENT?` "environment-query"
-- [ ] 2022.10.04 `EVALUATE`
-- [ ] 2022.10.05 `EXECUTE`
-- [ ] 2022.10.06 `EXIT`
-- [ ] 2022.10.07 `FILL`
-- [ ] 2022.10.08 `FIND`
-- [ ] 2022.10.09 `HERE`
-- [ ] 2022.10.10 `HOLD`
-- [ ] 2022.10.11 `I`
-- [ ] 2022.10.12 `IF`
-- [ ] 2022.10.13 `IMMEDIATE`
-- [ ] 2022.10.14 `J`
-- [ ] 2022.10.15 `KEY`
-- [ ] 2022.10.16 `LEAVE`
-- [ ] 2022.10.17 `LITERAL`
-- [ ] 2022.10.18 `LOOP`
-- [ ] 2022.10.19 `MOVE`
-- [ ] 2022.10.20 `POSTPONE`
-- [ ] 2022.10.21 `QUIT`
-- [ ] 2022.10.22 `R>` "r-from"
-- [ ] 2022.10.23 `R@` "r-fetch"
-- [ ] 2022.10.24 `RECURSE`
-- [ ] 2022.10.25 `REPEAT`
-- [ ] 2022.10.26 `S"` "s-quote"
-- [ ] 2022.10.27 `S>D` "s-to-d"
-- [ ] 2022.10.28 `SIGN`
-- [ ] 2022.10.29 `SOURCE`
-- [ ] 2022.10.30 `SPACE`
-- [ ] 2022.10.31 `SPACES`
-- [ ] 2022.11.01 `STATE`
-- [ ] 2022.11.02 `THEN`
-- [ ] 2022.11.03 `TYPE`
-- [ ] 2022.11.04 `UNLOOP`
-- [ ] 2022.11.05 `UNTIL`
-- [ ] 2022.11.06 `VARIABLE`
-- [ ] 2022.11.07 `WHILE`
-- [ ] 2022.11.08 `WORD`
-- [ ] 2022.11.09 `[` "left-bracket"
-- [ ] 2022.11.10 `[']` "bracket-tick"
-- [ ] 2022.11.11 `[CHAR]` "bracket-char"
-- [ ] 2022.11.12 `]` "right-bracket"
+- [ ] 2022.08.18 `!` "store"
+- [ ] 2022.08.19 `#` "number-sign"
+- [ ] 2022.08.20 `#>` "number-sign-greater"
+- [ ] 2022.08.21 `#S` "number-sign-s"
+- [ ] 2022.08.22 `'` "tick"
+- [ ] 2022.08.23 `+!` "plus-store"
+- [ ] 2022.08.24 `+LOOP` "plus-loop"
+- [ ] 2022.08.25 `,` "comma"
+- [ ] 2022.08.26 `2!` "two-store"
+- [ ] 2022.08.27 `2*` "two-star"
+- [ ] 2022.08.28 `2/` "two-slash"
+- [ ] 2022.08.29 `2@` "two-fetch"
+- [ ] 2022.08.30 `2DROP` "two-drop"
+- [ ] 2022.08.31 `2DUP` "two-dup"
+- [ ] 2022.09.01 `2OVER` "two-over"
+- [ ] 2022.09.02 `2SWAP` "two-swap"
+- [ ] 2022.09.03 `<#` "less-number-sign"
+- [ ] 2022.09.04 `>BODY` "to-body"
+- [ ] 2022.09.05 `>IN` "to-in"
+- [ ] 2022.09.06 `>NUMBER` "to-number"
+- [ ] 2022.09.07 `>R` "to-r"
+- [ ] 2022.09.08 `@` "fetch"
+- [ ] 2022.09.09 `ABORT`
+- [ ] 2022.09.10 `ABORT"`
+- [ ] 2022.09.11 `ABS`
+- [ ] 2022.09.12 `ACCEPT`
+- [ ] 2022.09.13 `ALIGN`
+- [ ] 2022.09.14 `ALIGNED`
+- [ ] 2022.09.15 `ALLOT`
+- [ ] 2022.09.16 `BEGIN`
+- [ ] 2022.09.17 `BL`
+- [ ] 2022.09.18 `C!` "c-store"
+- [ ] 2022.09.19 `C,` "c-comma"
+- [ ] 2022.09.20 `C@` "c-fetch"
+- [ ] 2022.09.21 `CELL+` "cell-plus"
+- [ ] 2022.09.22 `CELLS`
+- [ ] 2022.09.23 `CHAR`
+- [ ] 2022.09.24 `CHAR+` "char-plus"
+- [ ] 2022.09.25 `CHARS`
+- [ ] 2022.09.26 `CONSTANT`
+- [ ] 2022.09.27 `COUNT`
+- [ ] 2022.09.28 `CREATE`
+- [ ] 2022.09.29 `DEPTH`
+- [ ] 2022.09.30 `DO`
+- [ ] 2022.10.01 `DOES>` "does"
+- [ ] 2022.10.02 `ELSE`
+- [ ] 2022.10.03 `EMIT`
+- [ ] 2022.10.04 `ENVIRONMENT?` "environment-query"
+- [ ] 2022.10.05 `EVALUATE`
+- [ ] 2022.10.06 `EXECUTE`
+- [ ] 2022.10.07 `EXIT`
+- [ ] 2022.10.08 `FILL`
+- [ ] 2022.10.09 `FIND`
+- [ ] 2022.10.10 `HERE`
+- [ ] 2022.10.11 `HOLD`
+- [ ] 2022.10.12 `I`
+- [ ] 2022.10.13 `IF`
+- [ ] 2022.10.14 `IMMEDIATE`
+- [ ] 2022.10.15 `J`
+- [ ] 2022.10.16 `KEY`
+- [ ] 2022.10.17 `LEAVE`
+- [ ] 2022.10.18 `LITERAL`
+- [ ] 2022.10.19 `LOOP`
+- [ ] 2022.10.20 `MOVE`
+- [ ] 2022.10.21 `POSTPONE`
+- [ ] 2022.10.22 `QUIT`
+- [ ] 2022.10.23 `R>` "r-from"
+- [ ] 2022.10.24 `R@` "r-fetch"
+- [ ] 2022.10.25 `RECURSE`
+- [ ] 2022.10.26 `REPEAT`
+- [ ] 2022.10.27 `S"` "s-quote"
+- [ ] 2022.10.28 `S>D` "s-to-d"
+- [ ] 2022.10.29 `SIGN`
+- [ ] 2022.10.30 `SOURCE`
+- [ ] 2022.10.31 `SPACE`
+- [ ] 2022.11.01 `SPACES`
+- [ ] 2022.11.02 `STATE`
+- [ ] 2022.11.03 `THEN`
+- [ ] 2022.11.04 `TYPE`
+- [ ] 2022.11.05 `UNLOOP`
+- [ ] 2022.11.06 `UNTIL`
+- [ ] 2022.11.07 `VARIABLE`
+- [ ] 2022.11.08 `WHILE`
+- [ ] 2022.11.09 `WORD`
+- [ ] 2022.11.10 `[` "left-bracket"
+- [ ] 2022.11.11 `[']` "bracket-tick"
+- [ ] 2022.11.12 `[CHAR]` "bracket-char"
+- [ ] 2022.11.13 `]` "right-bracket"
 - [ ] 202?.??.?? `PubForth 0.3.0`: Core word set
-- [ ] 2022.11.13 `.(` "dot-paren"
-- [ ] 2022.11.14 `.R` "dot-r"
-- [ ] 2022.11.15 `2>R` "two-to-r"
-- [ ] 2022.11.16 `2R>` "two-r-from"
-- [ ] 2022.11.17 `2R@` "two-r-fetch"
-- [ ] 2022.11.18 `:NONAME` "colon-no-name"
-- [ ] 2022.11.19 `?DO` "question-do"
-- [ ] 2022.11.20 `ACTION-OF`
-- [ ] 2022.11.21 `AGAIN`
-- [ ] 2022.11.22 `BUFFER:`
-- [ ] 2022.11.23 `C"` "c-quote"
-- [ ] 2022.11.24 `CASE`
-- [ ] 2022.11.25 `COMPILE,`
-- [ ] 2022.11.26 `DEFER`
-- [ ] 2022.11.27 `DEFER!` "defer-store"
-- [ ] 2022.11.28 `DEFER@` "defer-fetch"
-- [ ] 2022.11.29 `ENDCASE`
-- [ ] 2022.11.30 `ENDOF`
-- [ ] 2022.12.01 `ERASE`
-- [ ] 2022.12.02 `HOLDS`
-- [ ] 2022.12.03 `IS`
-- [ ] 2022.12.04 `MARKER`
-- [ ] 2022.12.05 `OF`
-- [ ] 2022.12.06 `PAD`
-- [ ] 2022.12.07 `PARSE`
-- [ ] 2022.12.08 `PARSE-NAME`
-- [ ] 2022.12.09 `PICK`
-- [ ] 2022.12.10 `REFILL`
-- [ ] 2022.12.11 `RESTORE-INPUT`
-- [ ] 2022.12.12 `ROLL`
-- [ ] 2022.12.13 `S\"` "s-backslash-quote"
-- [ ] 2022.12.14 `SAVE-INPUT`
-- [ ] 2022.12.15 `SOURCE-ID`
-- [ ] 2022.12.16 `TO`
-- [ ] 2022.12.17 `TUCK`
-- [ ] 2022.12.18 `U.R` "u-dot-r"
-- [ ] 2022.12.19 `UNUSED`
-- [ ] 2022.12.20 `VALUE`
-- [ ] 2022.12.21 `WITHIN`
-- [ ] 2022.12.22 `[COMPILE]` "bracket-compile"
-- [ ] 2022.12.23 `.S` "dot-s"
-- [ ] 2022.12.24 `?` "question"
-- [ ] 2022.12.25 `DUMP`
-- [ ] 2022.12.26 `SEE`
-- [ ] 2022.12.27 `WORDS`
-- [ ] 2022.12.28 `ALLOCATE`
-- [ ] 2022.12.29 `FREE`
-- [ ] 2022.12.30 `RESIZE`
-- [ ] 2022.12.31 `-TRAILING` "dash-trailing"
-- [ ] 2023.01.01 `/STRING` "slash-string"
-- [ ] 2023.01.02 `BLANK`
-- [ ] 2023.01.03 `CMOVE`
-- [ ] 2023.01.04 `CMOVE>`
-- [ ] 2023.01.05 `COMPARE`
-- [ ] 2023.01.06 `SEARCH`
-- [ ] 2023.01.07 `SLITERAL`
-- [ ] 2023.01.08 `REPLACES`
-- [ ] 2023.01.09 `SUBSTITUTE`
-- [ ] 2023.01.10 `UNESCAPE`
-- [ ] 2023.01.11 `BIN`
-- [ ] 2023.01.12 `CLOSE-FILE`
-- [ ] 2023.01.13 `CREATE-FILE`
-- [ ] 2023.01.14 `DELETE-FILE`
-- [ ] 2023.01.15 `FILE-POSITION`
-- [ ] 2023.01.16 `FILE-SIZE`
-- [ ] 2023.01.17 `INCLUDE-FILE`
-- [ ] 2023.01.18 `INCLUDED`
-- [ ] 2023.01.19 `OPEN-FILE`
-- [ ] 2023.01.20 `R/O` "r-o"
-- [ ] 2023.01.21 `R/W` "r-w"
-- [ ] 2023.01.22 `READ-FILE`
-- [ ] 2023.01.23 `READ-LINE`
-- [ ] 2023.01.24 `REPOSITION-FILE`
-- [ ] 2023.01.25 `RESIZE-FILE`
-- [ ] 2023.01.26 `S"` "s-quote"
-- [ ] 2023.01.27 `SOURCE-ID`
-- [ ] 2023.01.28 `W/O` "w-o"
-- [ ] 2023.01.29 `WRITE-FILE`
-- [ ] 2023.01.30 `WRITE-LINE`
-- [ ] 2023.01.31 `FILE-STATUS`
-- [ ] 2023.02.01 `FLUSH-FILE`
-- [ ] 2023.02.02 `INCLUDE`
-- [ ] 2023.02.03 `REFILL`
-- [ ] 2023.02.04 `RENAME-FILE`
-- [ ] 2023.02.05 `REQUIRE`
-- [ ] 2023.02.06 `REQUIRED`
-- [ ] 2023.02.07 `S\"` "s-backslash-quote"
-- [ ] 2023.02.08 `CATCH`
-- [ ] 2023.02.09 `THROW`
-- [ ] 2023.02.10 `ABORT`
-- [ ] 2023.02.11 `ABORT"` "abort-quote"
-- [ ] 2023.02.12 `(LOCAL)` "paren-local-paren"
-- [ ] 2023.02.13 `LOCALS|` "locals-bar"
-- [ ] 2023.02.14 `{:` "brace-colon"
-- [ ] 2023.02.15 `DEFINITIONS`
-- [ ] 2023.02.16 `FIND`
-- [ ] 2023.02.17 `FORTH-WORDLIST`
-- [ ] 2023.02.18 `GET-CURRENT`
-- [ ] 2023.02.19 `GET-ORDER`
-- [ ] 2023.02.20 `SEARCH-WORDLIST`
-- [ ] 2023.02.21 `SET-CURRENT`
-- [ ] 2023.02.22 `SET-ORDER`
-- [ ] 2023.02.23 `WORDLIST`
-- [ ] 2023.02.24 `ALSO`
-- [ ] 2023.02.25 `FORTH`
-- [ ] 2023.02.26 `ONLY`
-- [ ] 2023.02.27 `ORDER`
-- [ ] 2023.02.28 `PREVIOUS`
-- [ ] 2023.03.01 `>FLOAT` "to-float"
-- [ ] 2023.03.02 `D>F` "d-to-f"
-- [ ] 2023.03.03 `F!` "f-store"
-- [ ] 2023.03.04 `F*` "f-star"
-- [ ] 2023.03.05 `F+` "f-plus"
-- [ ] 2023.03.06 `F-` "f-minus"
-- [ ] 2023.03.07 `F/` "f-slash"
-- [ ] 2023.03.08 `F0<` "f-zero-less-than"
-- [ ] 2023.03.09 `F0=` "f-zero-equals"
-- [ ] 2023.03.10 `F<` "f-less-than"
-- [ ] 2023.03.11 `F>D` "f-to-d"
-- [ ] 2023.03.12 `F@` "f-fetch"
-- [ ] 2023.03.13 `FALIGN`
-- [ ] 2023.03.14 `FALIGNED`
-- [ ] 2023.03.15 `FCONSTANT`
-- [ ] 2023.03.16 `FDEPTH`
-- [ ] 2023.03.17 `FDROP`
-- [ ] 2023.03.18 `FDUP`
-- [ ] 2023.03.19 `FLITERAL`
-- [ ] 2023.03.20 `FLOAT+` "float-plus"
-- [ ] 2023.03.21 `FLOATS`
-- [ ] 2023.03.22 `FLOOR`
-- [ ] 2023.03.23 `FMAX`
-- [ ] 2023.03.24 `FMIN`
-- [ ] 2023.03.25 `FNEGATE`
-- [ ] 2023.03.26 `FOVER`
-- [ ] 2023.03.27 `FROT`
-- [ ] 2023.03.28 `FROUND`
-- [ ] 2023.03.29 `FSWAP`
-- [ ] 2023.03.30 `FVARIABLE`
-- [ ] 2023.03.31 `REPRESENT`
-- [ ] 2023.04.01 `DF!` "d-f-store"
-- [ ] 2023.04.02 `DF@` "d-f-fetch"
-- [ ] 2023.04.03 `DFALIGN`
-- [ ] 2023.04.04 `DFALIGNED`
-- [ ] 2023.04.05 `DFFIELD:` "d-f-field-colon"
-- [ ] 2023.04.06 `DFLOAT+` "d-float-plus"
-- [ ] 2023.04.07 `DFLOATS` "d-floats"
-- [ ] 2023.04.08 `F**` "f-star-star"
-- [ ] 2023.04.09 `F.` "f-dot"
-- [ ] 2023.04.10 `F>S` "f-to-s"
-- [ ] 2023.04.11 `FABS` "f-abs"
-- [ ] 2023.04.12 `FACOS` "f-a-cos"
-- [ ] 2023.04.13 `FACOSH` "f-a-cosh"
-- [ ] 2023.04.14 `FALOG` "f-a-log"
-- [ ] 2023.04.15 `FASIN` "f-a-sin"
-- [ ] 2023.04.16 `FASINH` "f-a-cinch"
-- [ ] 2023.04.17 `FATAN` "f-a-tan"
-- [ ] 2023.04.18 `FATAN2` "f-a-tan-two"
-- [ ] 2023.04.19 `FATANH` "f-a-tan-h"
-- [ ] 2023.04.20 `FCOS` "f-cos"
-- [ ] 2023.04.21 `FCOSH` "f-cosh"
-- [ ] 2023.04.22 `FE.` "f-e-dot"
-- [ ] 2023.04.23 `FEXP`
-- [ ] 2023.04.24 `FEXPM1`
-- [ ] 2023.04.25 `FFIELD:`
-- [ ] 2023.04.26 `FLN`
-- [ ] 2023.04.27 `FLNP1`
-- [ ] 2023.04.28 `FLOG`
-- [ ] 2023.04.29 `FS.` "f-s-dot"
-- [ ] 2023.04.30 `FSIN`
-- [ ] 2023.05.01 `FSINCOS`
-- [ ] 2023.05.02 `FSINH`
-- [ ] 2023.05.03 `FSQRT`
-- [ ] 2023.05.04 `FTAN`
-- [ ] 2023.05.05 `FTANH`
-- [ ] 2023.05.06 `FTRUNC`
-- [ ] 2023.05.07 `FVALUE`
-- [ ] 2023.05.08 `F~` "f-proximate"
-- [ ] 2023.05.09 `PRECISION`
-- [ ] 2023.05.10 `S>F` "s-to-f"
-- [ ] 2023.05.11 `SET-PRECISION`
-- [ ] 2023.05.12 `SF!` "s-f-store"
-- [ ] 2023.05.13 `SF@` "s-f-fetch"
-- [ ] 2023.05.14 `SFALIGN` "s-f-align"
-- [ ] 2023.05.15 `SFALIGNED` "s-f-aligned"
-- [ ] 2023.05.16 `SFFIELD:` "s-f-field-colon"
-- [ ] 2023.05.17 `SFLOAT+` "s-float-plus"
-- [ ] 2023.05.18 `SFLOATS` "s-floats"
-- [ ] 2023.05.19 `X-SIZE`
-- [ ] 2023.05.20 `XC!+` "x-c-store-plus"
-- [ ] 2023.05.21 `XC!+?` "x-c-store-plus-query"
-- [ ] 2023.05.22 `XC,` "x-c-comma"
-- [ ] 2023.05.23 `XC-SIZE` "x-c-size"
-- [ ] 2023.05.24 `XC@+` "x-c-fetch-plus"
-- [ ] 2023.05.25 `XCHAR+` "x-char-plus"
-- [ ] 2023.05.26 `XEMIT` "x-emit"
-- [ ] 2023.05.27 `XKEY` "x-key"
-- [ ] 2023.05.28 `XKEY?` "x-key-query"
-- [ ] 2023.05.29 `+X/STRING` "plus-x-string"
-- [ ] 2023.05.30 `-TRAILING-GARBAGE` "minus-trailing-garbage"
-- [ ] 2023.05.31 `CHAR`
-- [ ] 2023.06.01 `EKEY>XCHAR` "e-key-to-x-char"
-- [ ] 2023.06.02 `PARSE`
-- [ ] 2023.06.03 `X-WIDTH`
-- [ ] 2023.06.04 `XC-WIDTH` "x-c-width"
-- [ ] 2023.06.05 `XCHAR-` "x-char-minus"
-- [ ] 2023.06.06 `XHOLD` "x-hold"
-- [ ] 2023.06.07 `X\STRING-` "x-string-minus"
-- [ ] 2023.06.08 `[CHAR]` "bracket-char"
-- [ ] 2023.06.09 `;CODE` "semicolon-code"
-- [ ] 2023.06.10 `AHEAD`
-- [ ] 2023.06.11 `ASSEMBLER`
-- [ ] 2023.06.12 `BYE`
-- [ ] 2023.06.13 `CODE`
-- [ ] 2023.06.14 `CS-PICK` "c-s-pick"
-- [ ] 2023.06.15 `CS-ROLL` "c-s-roll"
-- [ ] 2023.06.16 `EDITOR`
-- [ ] 2023.06.17 `FORGET`
-- [ ] 2023.06.18 `N>R` "n-to-r"
-- [ ] 2023.06.19 `NAME>COMPILE` "name-to-compile"
-- [ ] 2023.06.20 `NAME>INTERPRET` "name-to-interpret"
-- [ ] 2023.06.21 `NAME>STRING` "name-to-string"
-- [ ] 2023.06.22 `NR>` "n-r-from"
-- [ ] 2023.06.23 `STATE`
-- [ ] 2023.06.24 `SYNONYM`
-- [ ] 2023.06.25 `TRAVERSE-WORDLIST`
-- [ ] 2023.06.26 `[DEFINED]` "bracket-defined"
-- [ ] 2023.06.27 `[ELSE]` "bracket-else"
-- [ ] 2023.06.28 `[IF]` "bracket-if"
-- [ ] 2023.06.29 `[THEN]` "bracket-then"
-- [ ] 2023.06.30 `[UNDEFINED]` "bracket-undefined"
-- [ ] 2023.07.01 `BLK`
-- [ ] 2023.07.02 `BLOCK`
-- [ ] 2023.07.03 `BUFFER`
-- [ ] 2023.07.04 `EVALUATE`
-- [ ] 2023.07.05 `FLUSH`
-- [ ] 2023.07.06 `LOAD`
-- [ ] 2023.07.07 `SAVE-BUFFERS`
-- [ ] 2023.07.08 `UPDATE`
-- [ ] 2023.07.09 `EMPTY-BUFFERS`
-- [ ] 2023.07.10 `LIST`
-- [ ] 2023.07.11 `REFILL`
-- [ ] 2023.07.12 `SCR`
-- [ ] 2023.07.13 `THRU`
-- [ ] 2023.07.14 `\` "backslash"
-- [ ] 2023.07.15 `2CONSTANT` "two-constant"
-- [ ] 2023.07.16 `2LITERAL` "two-literal"
-- [ ] 2023.07.17 `2VARIABLE` "two-variable"
-- [ ] 2023.07.18 `D+` "d-plus"
-- [ ] 2023.07.19 `D-` "d-minus"
-- [ ] 2023.07.20 `D.` "d-dot"
-- [ ] 2023.07.21 `D.R` "d-dot-r"
-- [ ] 2023.07.22 `D0<` "d-zero-less"
-- [ ] 2023.07.23 `D0=` "d-zero-equals"
-- [ ] 2023.07.24 `D2*` "d-two-star"
-- [ ] 2023.07.25 `D2/` "d-two-slash"
-- [ ] 2023.07.26 `D<` "d-less-than"
-- [ ] 2023.07.27 `D=` "d-equals"
-- [ ] 2023.07.28 `D>S` "d-to-s"
-- [ ] 2023.07.29 `DABS`
-- [ ] 2023.07.30 `DMAX`
-- [ ] 2023.07.31 `DMIN`
-- [ ] 2023.08.01 `DNEGATE`
-- [ ] 2023.08.02 `M*/` "m-star-slash"
-- [ ] 2023.08.03 `M+` "m-plus"
-- [ ] 2023.08.04 `2ROT` "two-rote"
-- [ ] 2023.08.05 `2VALUE` "two-value"
-- [ ] 2023.08.06 `DU<` "d-u-less"
-- [ ] 2023.08.07 `AT-XY` "at-x-y"
-- [ ] 2023.08.08 `KEY?` "key-question"
-- [ ] 2023.08.09 `PAGE`
-- [ ] 2023.08.10 `+FIELD` "plus-field"
-- [ ] 2023.08.11 `BEGIN-STRUCTURE`
-- [ ] 2023.08.12 `CFIELD:` "c-field-colon"
-- [ ] 2023.08.13 `EKEY`
-- [ ] 2023.08.14 `EKEY>CHAR` "e-key-to-char"
-- [ ] 2023.08.15 `EKEY>FKEY` "e-key-to-f-key"
-- [ ] 2023.08.16 `EKEY?` "e-key-question"
-- [ ] 2023.08.17 `EMIT?` "emit-question"
-- [ ] 2023.08.18 `END-STRUCTURE`
-- [ ] 2023.08.19 `FIELD:` "field-colon"
-- [ ] 2023.08.20 `K-ALT-MASK`
-- [ ] 2023.08.21 `K-CTRL-MASK`
-- [ ] 2023.08.22 `K-DELETE`
-- [ ] 2023.08.23 `K-DOWN`
-- [ ] 2023.08.24 `K-END`
-- [ ] 2023.08.25 `K-F1`
-- [ ] 2023.08.26 `K-F10`
-- [ ] 2023.08.27 `K-F11`
-- [ ] 2023.08.28 `K-F12`
-- [ ] 2023.08.29 `K-F2`
-- [ ] 2023.08.30 `K-F3`
-- [ ] 2023.08.31 `K-F4`
-- [ ] 2023.09.01 `K-F5`
-- [ ] 2023.09.02 `K-F6`
-- [ ] 2023.09.03 `K-F7`
-- [ ] 2023.09.04 `K-F8`
-- [ ] 2023.09.05 `K-F9`
-- [ ] 2023.09.06 `K-HOME`
-- [ ] 2023.09.07 `K-INSERT`
-- [ ] 2023.09.08 `K-LEFT`
-- [ ] 2023.09.09 `K-NEXT`
-- [ ] 2023.09.10 `K-PRIOR`
-- [ ] 2023.09.11 `K-RIGHT`
-- [ ] 2023.09.12 `K-SHIFT-MASK`
-- [ ] 2023.09.13 `K-UP`
-- [ ] 2023.09.14 `MS`
-- [ ] 2023.09.15 `TIME&DATE` "time-and-date"
+- [ ] 2022.11.14 `.(` "dot-paren"
+- [ ] 2022.11.15 `.R` "dot-r"
+- [ ] 2022.11.16 `2>R` "two-to-r"
+- [ ] 2022.11.17 `2R>` "two-r-from"
+- [ ] 2022.11.18 `2R@` "two-r-fetch"
+- [ ] 2022.11.19 `:NONAME` "colon-no-name"
+- [ ] 2022.11.20 `?DO` "question-do"
+- [ ] 2022.11.21 `ACTION-OF`
+- [ ] 2022.11.22 `AGAIN`
+- [ ] 2022.11.23 `BUFFER:`
+- [ ] 2022.11.24 `C"` "c-quote"
+- [ ] 2022.11.25 `CASE`
+- [ ] 2022.11.26 `COMPILE,`
+- [ ] 2022.11.27 `DEFER`
+- [ ] 2022.11.28 `DEFER!` "defer-store"
+- [ ] 2022.11.29 `DEFER@` "defer-fetch"
+- [ ] 2022.11.30 `ENDCASE`
+- [ ] 2022.12.01 `ENDOF`
+- [ ] 2022.12.02 `ERASE`
+- [ ] 2022.12.03 `HOLDS`
+- [ ] 2022.12.04 `IS`
+- [ ] 2022.12.05 `MARKER`
+- [ ] 2022.12.06 `OF`
+- [ ] 2022.12.07 `PAD`
+- [ ] 2022.12.08 `PARSE`
+- [ ] 2022.12.09 `PARSE-NAME`
+- [ ] 2022.12.10 `PICK`
+- [ ] 2022.12.11 `REFILL`
+- [ ] 2022.12.12 `RESTORE-INPUT`
+- [ ] 2022.12.13 `ROLL`
+- [ ] 2022.12.14 `S\"` "s-backslash-quote"
+- [ ] 2022.12.15 `SAVE-INPUT`
+- [ ] 2022.12.16 `SOURCE-ID`
+- [ ] 2022.12.17 `TO`
+- [ ] 2022.12.18 `TUCK`
+- [ ] 2022.12.19 `U.R` "u-dot-r"
+- [ ] 2022.12.20 `UNUSED`
+- [ ] 2022.12.21 `VALUE`
+- [ ] 2022.12.22 `WITHIN`
+- [ ] 2022.12.23 `[COMPILE]` "bracket-compile"
+- [ ] 2022.12.24 `.S` "dot-s"
+- [ ] 2022.12.25 `?` "question"
+- [ ] 2022.12.26 `DUMP`
+- [ ] 2022.12.27 `SEE`
+- [ ] 2022.12.28 `WORDS`
+- [ ] 2022.12.29 `ALLOCATE`
+- [ ] 2022.12.30 `FREE`
+- [ ] 2022.12.31 `RESIZE`
+- [ ] 2023.01.01 `-TRAILING` "dash-trailing"
+- [ ] 2023.01.02 `/STRING` "slash-string"
+- [ ] 2023.01.03 `BLANK`
+- [ ] 2023.01.04 `CMOVE`
+- [ ] 2023.01.05 `CMOVE>`
+- [ ] 2023.01.06 `COMPARE`
+- [ ] 2023.01.07 `SEARCH`
+- [ ] 2023.01.08 `SLITERAL`
+- [ ] 2023.01.09 `REPLACES`
+- [ ] 2023.01.10 `SUBSTITUTE`
+- [ ] 2023.01.11 `UNESCAPE`
+- [ ] 2023.01.12 `BIN`
+- [ ] 2023.01.13 `CLOSE-FILE`
+- [ ] 2023.01.14 `CREATE-FILE`
+- [ ] 2023.01.15 `DELETE-FILE`
+- [ ] 2023.01.16 `FILE-POSITION`
+- [ ] 2023.01.17 `FILE-SIZE`
+- [ ] 2023.01.18 `INCLUDE-FILE`
+- [ ] 2023.01.19 `INCLUDED`
+- [ ] 2023.01.20 `OPEN-FILE`
+- [ ] 2023.01.21 `R/O` "r-o"
+- [ ] 2023.01.22 `R/W` "r-w"
+- [ ] 2023.01.23 `READ-FILE`
+- [ ] 2023.01.24 `READ-LINE`
+- [ ] 2023.01.25 `REPOSITION-FILE`
+- [ ] 2023.01.26 `RESIZE-FILE`
+- [ ] 2023.01.27 `S"` "s-quote"
+- [ ] 2023.01.28 `SOURCE-ID`
+- [ ] 2023.01.29 `W/O` "w-o"
+- [ ] 2023.01.30 `WRITE-FILE`
+- [ ] 2023.01.31 `WRITE-LINE`
+- [ ] 2023.02.01 `FILE-STATUS`
+- [ ] 2023.02.02 `FLUSH-FILE`
+- [ ] 2023.02.03 `INCLUDE`
+- [ ] 2023.02.04 `REFILL`
+- [ ] 2023.02.05 `RENAME-FILE`
+- [ ] 2023.02.06 `REQUIRE`
+- [ ] 2023.02.07 `REQUIRED`
+- [ ] 2023.02.08 `S\"` "s-backslash-quote"
+- [ ] 2023.02.09 `CATCH`
+- [ ] 2023.02.10 `THROW`
+- [ ] 2023.02.11 `ABORT`
+- [ ] 2023.02.12 `ABORT"` "abort-quote"
+- [ ] 2023.02.13 `(LOCAL)` "paren-local-paren"
+- [ ] 2023.02.14 `LOCALS|` "locals-bar"
+- [ ] 2023.02.15 `{:` "brace-colon"
+- [ ] 2023.02.16 `DEFINITIONS`
+- [ ] 2023.02.17 `FIND`
+- [ ] 2023.02.18 `FORTH-WORDLIST`
+- [ ] 2023.02.19 `GET-CURRENT`
+- [ ] 2023.02.20 `GET-ORDER`
+- [ ] 2023.02.21 `SEARCH-WORDLIST`
+- [ ] 2023.02.22 `SET-CURRENT`
+- [ ] 2023.02.23 `SET-ORDER`
+- [ ] 2023.02.24 `WORDLIST`
+- [ ] 2023.02.25 `ALSO`
+- [ ] 2023.02.26 `FORTH`
+- [ ] 2023.02.27 `ONLY`
+- [ ] 2023.02.28 `ORDER`
+- [ ] 2023.03.01 `PREVIOUS`
+- [ ] 2023.03.02 `>FLOAT` "to-float"
+- [ ] 2023.03.03 `D>F` "d-to-f"
+- [ ] 2023.03.04 `F!` "f-store"
+- [ ] 2023.03.05 `F*` "f-star"
+- [ ] 2023.03.06 `F+` "f-plus"
+- [ ] 2023.03.07 `F-` "f-minus"
+- [ ] 2023.03.08 `F/` "f-slash"
+- [ ] 2023.03.09 `F0<` "f-zero-less-than"
+- [ ] 2023.03.10 `F0=` "f-zero-equals"
+- [ ] 2023.03.11 `F<` "f-less-than"
+- [ ] 2023.03.12 `F>D` "f-to-d"
+- [ ] 2023.03.13 `F@` "f-fetch"
+- [ ] 2023.03.14 `FALIGN`
+- [ ] 2023.03.15 `FALIGNED`
+- [ ] 2023.03.16 `FCONSTANT`
+- [ ] 2023.03.17 `FDEPTH`
+- [ ] 2023.03.18 `FDROP`
+- [ ] 2023.03.19 `FDUP`
+- [ ] 2023.03.20 `FLITERAL`
+- [ ] 2023.03.21 `FLOAT+` "float-plus"
+- [ ] 2023.03.22 `FLOATS`
+- [ ] 2023.03.23 `FLOOR`
+- [ ] 2023.03.24 `FMAX`
+- [ ] 2023.03.25 `FMIN`
+- [ ] 2023.03.26 `FNEGATE`
+- [ ] 2023.03.27 `FOVER`
+- [ ] 2023.03.28 `FROT`
+- [ ] 2023.03.29 `FROUND`
+- [ ] 2023.03.30 `FSWAP`
+- [ ] 2023.03.31 `FVARIABLE`
+- [ ] 2023.04.01 `REPRESENT`
+- [ ] 2023.04.02 `DF!` "d-f-store"
+- [ ] 2023.04.03 `DF@` "d-f-fetch"
+- [ ] 2023.04.04 `DFALIGN`
+- [ ] 2023.04.05 `DFALIGNED`
+- [ ] 2023.04.06 `DFFIELD:` "d-f-field-colon"
+- [ ] 2023.04.07 `DFLOAT+` "d-float-plus"
+- [ ] 2023.04.08 `DFLOATS` "d-floats"
+- [ ] 2023.04.09 `F**` "f-star-star"
+- [ ] 2023.04.10 `F.` "f-dot"
+- [ ] 2023.04.11 `F>S` "f-to-s"
+- [ ] 2023.04.12 `FABS` "f-abs"
+- [ ] 2023.04.13 `FACOS` "f-a-cos"
+- [ ] 2023.04.14 `FACOSH` "f-a-cosh"
+- [ ] 2023.04.15 `FALOG` "f-a-log"
+- [ ] 2023.04.16 `FASIN` "f-a-sin"
+- [ ] 2023.04.17 `FASINH` "f-a-cinch"
+- [ ] 2023.04.18 `FATAN` "f-a-tan"
+- [ ] 2023.04.19 `FATAN2` "f-a-tan-two"
+- [ ] 2023.04.20 `FATANH` "f-a-tan-h"
+- [ ] 2023.04.21 `FCOS` "f-cos"
+- [ ] 2023.04.22 `FCOSH` "f-cosh"
+- [ ] 2023.04.23 `FE.` "f-e-dot"
+- [ ] 2023.04.24 `FEXP`
+- [ ] 2023.04.25 `FEXPM1`
+- [ ] 2023.04.26 `FFIELD:`
+- [ ] 2023.04.27 `FLN`
+- [ ] 2023.04.28 `FLNP1`
+- [ ] 2023.04.29 `FLOG`
+- [ ] 2023.04.30 `FS.` "f-s-dot"
+- [ ] 2023.05.01 `FSIN`
+- [ ] 2023.05.02 `FSINCOS`
+- [ ] 2023.05.03 `FSINH`
+- [ ] 2023.05.04 `FSQRT`
+- [ ] 2023.05.05 `FTAN`
+- [ ] 2023.05.06 `FTANH`
+- [ ] 2023.05.07 `FTRUNC`
+- [ ] 2023.05.08 `FVALUE`
+- [ ] 2023.05.09 `F~` "f-proximate"
+- [ ] 2023.05.10 `PRECISION`
+- [ ] 2023.05.11 `S>F` "s-to-f"
+- [ ] 2023.05.12 `SET-PRECISION`
+- [ ] 2023.05.13 `SF!` "s-f-store"
+- [ ] 2023.05.14 `SF@` "s-f-fetch"
+- [ ] 2023.05.15 `SFALIGN` "s-f-align"
+- [ ] 2023.05.16 `SFALIGNED` "s-f-aligned"
+- [ ] 2023.05.17 `SFFIELD:` "s-f-field-colon"
+- [ ] 2023.05.18 `SFLOAT+` "s-float-plus"
+- [ ] 2023.05.19 `SFLOATS` "s-floats"
+- [ ] 2023.05.20 `X-SIZE`
+- [ ] 2023.05.21 `XC!+` "x-c-store-plus"
+- [ ] 2023.05.22 `XC!+?` "x-c-store-plus-query"
+- [ ] 2023.05.23 `XC,` "x-c-comma"
+- [ ] 2023.05.24 `XC-SIZE` "x-c-size"
+- [ ] 2023.05.25 `XC@+` "x-c-fetch-plus"
+- [ ] 2023.05.26 `XCHAR+` "x-char-plus"
+- [ ] 2023.05.27 `XEMIT` "x-emit"
+- [ ] 2023.05.28 `XKEY` "x-key"
+- [ ] 2023.05.29 `XKEY?` "x-key-query"
+- [ ] 2023.05.30 `+X/STRING` "plus-x-string"
+- [ ] 2023.05.31 `-TRAILING-GARBAGE` "minus-trailing-garbage"
+- [ ] 2023.06.01 `CHAR`
+- [ ] 2023.06.02 `EKEY>XCHAR` "e-key-to-x-char"
+- [ ] 2023.06.03 `PARSE`
+- [ ] 2023.06.04 `X-WIDTH`
+- [ ] 2023.06.05 `XC-WIDTH` "x-c-width"
+- [ ] 2023.06.06 `XCHAR-` "x-char-minus"
+- [ ] 2023.06.07 `XHOLD` "x-hold"
+- [ ] 2023.06.08 `X\STRING-` "x-string-minus"
+- [ ] 2023.06.09 `[CHAR]` "bracket-char"
+- [ ] 2023.06.10 `;CODE` "semicolon-code"
+- [ ] 2023.06.11 `AHEAD`
+- [ ] 2023.06.12 `ASSEMBLER`
+- [ ] 2023.06.13 `BYE`
+- [ ] 2023.06.14 `CODE`
+- [ ] 2023.06.15 `CS-PICK` "c-s-pick"
+- [ ] 2023.06.16 `CS-ROLL` "c-s-roll"
+- [ ] 2023.06.17 `EDITOR`
+- [ ] 2023.06.18 `FORGET`
+- [ ] 2023.06.19 `N>R` "n-to-r"
+- [ ] 2023.06.20 `NAME>COMPILE` "name-to-compile"
+- [ ] 2023.06.21 `NAME>INTERPRET` "name-to-interpret"
+- [ ] 2023.06.22 `NAME>STRING` "name-to-string"
+- [ ] 2023.06.23 `NR>` "n-r-from"
+- [ ] 2023.06.24 `STATE`
+- [ ] 2023.06.25 `SYNONYM`
+- [ ] 2023.06.26 `TRAVERSE-WORDLIST`
+- [ ] 2023.06.27 `[DEFINED]` "bracket-defined"
+- [ ] 2023.06.28 `[ELSE]` "bracket-else"
+- [ ] 2023.06.29 `[IF]` "bracket-if"
+- [ ] 2023.06.30 `[THEN]` "bracket-then"
+- [ ] 2023.07.01 `[UNDEFINED]` "bracket-undefined"
+- [ ] 2023.07.02 `BLK`
+- [ ] 2023.07.03 `BLOCK`
+- [ ] 2023.07.04 `BUFFER`
+- [ ] 2023.07.05 `EVALUATE`
+- [ ] 2023.07.06 `FLUSH`
+- [ ] 2023.07.07 `LOAD`
+- [ ] 2023.07.08 `SAVE-BUFFERS`
+- [ ] 2023.07.09 `UPDATE`
+- [ ] 2023.07.10 `EMPTY-BUFFERS`
+- [ ] 2023.07.11 `LIST`
+- [ ] 2023.07.12 `REFILL`
+- [ ] 2023.07.13 `SCR`
+- [ ] 2023.07.14 `THRU`
+- [ ] 2023.07.15 `\` "backslash"
+- [ ] 2023.07.16 `2CONSTANT` "two-constant"
+- [ ] 2023.07.17 `2LITERAL` "two-literal"
+- [ ] 2023.07.18 `2VARIABLE` "two-variable"
+- [ ] 2023.07.19 `D+` "d-plus"
+- [ ] 2023.07.20 `D-` "d-minus"
+- [ ] 2023.07.21 `D.` "d-dot"
+- [ ] 2023.07.22 `D.R` "d-dot-r"
+- [ ] 2023.07.23 `D0<` "d-zero-less"
+- [ ] 2023.07.24 `D0=` "d-zero-equals"
+- [ ] 2023.07.25 `D2*` "d-two-star"
+- [ ] 2023.07.26 `D2/` "d-two-slash"
+- [ ] 2023.07.27 `D<` "d-less-than"
+- [ ] 2023.07.28 `D=` "d-equals"
+- [ ] 2023.07.29 `D>S` "d-to-s"
+- [ ] 2023.07.30 `DABS`
+- [ ] 2023.07.31 `DMAX`
+- [ ] 2023.08.01 `DMIN`
+- [ ] 2023.08.02 `DNEGATE`
+- [ ] 2023.08.03 `M*/` "m-star-slash"
+- [ ] 2023.08.04 `M+` "m-plus"
+- [ ] 2023.08.05 `2ROT` "two-rote"
+- [ ] 2023.08.06 `2VALUE` "two-value"
+- [ ] 2023.08.07 `DU<` "d-u-less"
+- [ ] 2023.08.08 `AT-XY` "at-x-y"
+- [ ] 2023.08.09 `KEY?` "key-question"
+- [ ] 2023.08.10 `PAGE`
+- [ ] 2023.08.11 `+FIELD` "plus-field"
+- [ ] 2023.08.12 `BEGIN-STRUCTURE`
+- [ ] 2023.08.13 `CFIELD:` "c-field-colon"
+- [ ] 2023.08.14 `EKEY`
+- [ ] 2023.08.15 `EKEY>CHAR` "e-key-to-char"
+- [ ] 2023.08.16 `EKEY>FKEY` "e-key-to-f-key"
+- [ ] 2023.08.17 `EKEY?` "e-key-question"
+- [ ] 2023.08.18 `EMIT?` "emit-question"
+- [ ] 2023.08.19 `END-STRUCTURE`
+- [ ] 2023.08.20 `FIELD:` "field-colon"
+- [ ] 2023.08.21 `K-ALT-MASK`
+- [ ] 2023.08.22 `K-CTRL-MASK`
+- [ ] 2023.08.23 `K-DELETE`
+- [ ] 2023.08.24 `K-DOWN`
+- [ ] 2023.08.25 `K-END`
+- [ ] 2023.08.26 `K-F1`
+- [ ] 2023.08.27 `K-F10`
+- [ ] 2023.08.28 `K-F11`
+- [ ] 2023.08.29 `K-F12`
+- [ ] 2023.08.30 `K-F2`
+- [ ] 2023.08.31 `K-F3`
+- [ ] 2023.09.01 `K-F4`
+- [ ] 2023.09.02 `K-F5`
+- [ ] 2023.09.03 `K-F6`
+- [ ] 2023.09.04 `K-F7`
+- [ ] 2023.09.05 `K-F8`
+- [ ] 2023.09.06 `K-F9`
+- [ ] 2023.09.07 `K-HOME`
+- [ ] 2023.09.08 `K-INSERT`
+- [ ] 2023.09.09 `K-LEFT`
+- [ ] 2023.09.10 `K-NEXT`
+- [ ] 2023.09.11 `K-PRIOR`
+- [ ] 2023.09.12 `K-RIGHT`
+- [ ] 2023.09.13 `K-SHIFT-MASK`
+- [ ] 2023.09.14 `K-UP`
+- [ ] 2023.09.15 `MS`
+- [ ] 2023.09.16 `TIME&DATE` "time-and-date"
 - [ ] 202?.??.?? `PubForth 0.TBA.0`: Core Extensions word set
 - [ ] 202?.??.?? `PubForth 0.TBA.0`: Programming-Tools word set
 - [ ] 202?.??.?? `PubForth 0.TBA.0`: Programming-Tools Extensions word set

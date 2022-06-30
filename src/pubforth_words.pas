@@ -140,10 +140,10 @@ STATIC_WORDS_ARRAY: array[0 .. 480 - 1] of TWordInfo = (
 
   (N: '\';                  E: 'backslash';           T: 1656065664; F: FLAG_FORTH2012_CORE_EXT),
   (N: '(';                  E: 'paren';               T: 1656135560; F: FLAG_FORTH2012_CORE),
-  (N: ':';                  E: 'colon';               T: 0; F: FLAG_FORTH2012_CORE),
-  (N: ';';                  E: 'semicolon';           T: 0; F: FLAG_FORTH2012_CORE),
-  (N: '."';                 E: 'dot_quote';           T: 0; F: FLAG_FORTH2012_CORE),
-  (N: 'CR';                 E: nil;                   T: 0; F: FLAG_FORTH2012_CORE),
+  (N: ':';                  E: 'colon';               T: 1656625094; F: FLAG_FORTH2012_CORE),
+  (N: ';';                  E: 'semicolon';           T: 1656625094; F: FLAG_FORTH2012_CORE),
+  (N: '."';                 E: 'dot_quote';           T: 1656625094; F: FLAG_FORTH2012_CORE),
+  (N: 'CR';                 E: nil;                   T: 1656625094; F: FLAG_FORTH2012_CORE),
   (N: '`PubForth 0.1.0`: "Hello world" starter pack';    E: nil; T: 0; F: FLAG_PUBFORTH_MILESTONE),
 
   (N: '.';                  E: 'dot';                 T: 0; F: FLAG_FORTH2012_CORE),
