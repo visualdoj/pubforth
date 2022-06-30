@@ -12,7 +12,6 @@ TESTNAME=single_line_comments cd test/comments && ../../bin/pubforth single_line
 TESTNAME=multi_line_comments  cd test/comments && ../../bin/pubforth multi_line_comments.fs
 
 # Test backends
-TESTNAME=hello.dump     cd test/hello && ../../bin/pubforth hello.fs -o hello.dump
 TESTNAME=hello.pas      cd test/hello && ../../bin/pubforth hello.fs -o hello.pas
 TESTNAME=hello.c        cd test/hello && ../../bin/pubforth hello.fs -o hello.c
 TESTNAME=hello.win.fasm cd test/hello && ../../bin/pubforth hello.fs --os windows -o hello.win.fasm

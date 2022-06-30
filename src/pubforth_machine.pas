@@ -444,6 +444,8 @@ begin
       Rec := It;
       Exit(True);
     end;
+
+    It := It^.Next;
   end;
 
   Exit(False);
@@ -768,6 +770,10 @@ begin
   RegIntrinsic('BYE',     @f_BYE, OP_BYE);
   RegImmediate('\',       @f_SingleLineComment);
   RegImmediate('(',       @f_MultiLineComment);
+  RegIntrinsic(':',       @f_Colon, OP_ENTER);
+  RegImmediate(';',       @f_Semicolon);
+  RegIntrinsic('CR',      @f_CR, OP_CR);
+  RegImmediate('."',      @f_PrintLiteralStr);
 end;
 
 procedure TMachine.ConfigureTest;
@@ -779,12 +785,8 @@ end;
 
 procedure TMachine.ConfigureExperimental;
 begin
-  RegIntrinsic('CR',      @f_CR, OP_CR);
-  RegIntrinsic(':',       @f_Colon, OP_ENTER);
-  RegImmediate(';',       @f_Semicolon);
   RegIntrinsic('.',       @f_Dot, OP_DOT);
   RegIntrinsic('WORDS',   @f_Words, OP_WORDS);
-  RegImmediate('."',      @f_PrintLiteralStr);
 end;
 
 procedure TMachine.ConfigureREPL;
