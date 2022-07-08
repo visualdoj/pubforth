@@ -35,6 +35,7 @@ const
   OP_RETURN       = 8;
   OP_WORDS        = 9;
   OP_PRINT_LITERAL_STR    = 10;
+  OP_SEE          = 11;
 
 
 implementation

@@ -76,6 +76,8 @@ TValueDest      = TCellPtr; // dest
 TValueLoopSys   = TCellPtr; // loop-sys
 TValueNestSys   = TCellPtr; // nest-sys
 
+TValueFileID    = TValueN;
+
 PValueFlag      = ^TValueFlag;
 PValueChar      = ^TValueChar;
 PValueN         = ^TValueN;
@@ -127,6 +129,9 @@ TDictionaryRecord = object
   Opcode: Int32;
   Code: PUInt8;
   Flags: UInt8;
+  Source: AnsiString;
+  SourceIndex: UInt16; // beginning of the definition
+  SourceOffset: UInt16; // offset of the beginning of the definition in the source
 
   function IsReachable: Boolean; inline;
   function IsColonDefinition: Boolean; inline;
@@ -135,6 +140,7 @@ end;
 TDictionary = object
 private
   FLast: PDictionaryRecord;
+  FCurrentDefinition: PDictionaryRecord;
 
 public
   ReachableOpcodes: array[0 .. 255] of Boolean;
@@ -171,6 +177,10 @@ private
   FSourceBegin: PAnsiChar;
   FSource: PAnsiChar;     // <- cursor
   FSourceEnd: PAnsiChar;
+
+  FSources: array of AnsiString;
+  FSourceIndex: Int32; // current source index
+  FSourceID: TValueFlag; // for SOURCE-ID
 
   FBase: PtrInt;
 
@@ -237,7 +247,8 @@ public
       // <decdigit> :=  { 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 }
       // <hexdigit> :=  { <decdigit> | a | b | c | d | e | f | A | B | C | D | E | F }
 
-  function Interpret(S, SEnd: PAnsiChar): Boolean;
+  procedure AddSource(const S: AnsiString; ID: TValueFileID);
+  function InterpretLoop(S: PAnsiChar = nil; SEnd: PAnsiChar = nil): Boolean;
 
   function InterpretREPLInput(const Line: AnsiString): Boolean;
   function InterpretString(const S: AnsiString): Boolean;
@@ -423,7 +434,11 @@ begin
   Result^.Immediate := False;
   Result^.Opcode := -1;
   Result^.Code := nil;
+  Result^.Source := '';
+  Result^.SourceIndex := High(UInt16);
+  Result^.SourceOffset := 0;
   FLast := Result;
+  FCurrentDefinition := Result;
 end;
 
 function TDictionary.CreateDifinition(Name, NameEnd: PAnsiChar): PDictionaryRecord;
@@ -549,8 +564,11 @@ function f_Colon(Machine: PMachine; Param: Pointer): Boolean;
 var
   NameEnd: PAnsiChar;
   Rec: PDictionaryRecord;
+  SourceOffset: Int16;
 begin
   Machine^.FSource := SkipSpaces(Machine^.FSource, Machine^.FSourceEnd);
+  SourceOffset := Machine^.FSource - Machine^.FSourceBegin;
+
   NameEnd := SkipName(Machine^.FSource, Machine^.FSourceEnd);
   if Machine^.FSource >= NameEnd then
     Exit(Machine^.Error('name expected after :'));
@@ -559,6 +577,8 @@ begin
   Rec^.Semantic := @f_ColonDefinition;
   Rec^.Code := Machine^.FCode;
   Rec^.Flags := DEFINITION_COLON;
+  Rec^.SourceIndex := Machine^.FSourceIndex;
+  Rec^.SourceOffset := SourceOffset;
 
   Machine^.FSource := NameEnd + 1;
   Machine^.FState := STATE_COMPILE;
@@ -566,12 +586,28 @@ begin
 end;
 
 function f_Semicolon(Machine: PMachine; Param: Pointer): Boolean;
+var
+  Rec: PDictionaryRecord;
+  I: Int32;
 begin
   if Machine^.IsInterpreting then
     Exit(Machine^.Error('no interpreatation semantic for ;'));
 
   Machine^.Compile(OP_RETURN);
   Machine^.Compile(OP_END);
+
+  Rec := Machine^.FDictionary.FCurrentDefinition;
+  if Rec^.SourceIndex = Machine^.FSourceIndex then begin
+    Rec^.Source := ': ' + SliceToAnsiString(@Machine^.FSources[Machine^.FSourceIndex][Rec^.SourceOffset + 1],
+                                            Machine^.FSource);
+  end else begin
+    Rec^.Source := ': ' + SliceToAnsiString(@Machine^.FSources[Rec^.SourceIndex][Rec^.SourceOffset + 1],
+                                            @Machine^.FSources[Rec^.SourceIndex][Length(Machine^.FSources[Rec^.SourceIndex])]);
+    for I := Rec^.SourceIndex + 1 to Machine^.FSourceIndex - 1 do begin
+      Rec^.Source := Rec^.Source + ' ' + Machine^.FSources[I];
+    end;
+    Rec^.Source := Rec^.Source + ' ' + SliceToAnsiString(Machine^.FSourceBegin, Machine^.FSource);
+  end;
 
   Machine^.FState := STATE_INTERPRETING;
   Exit(True);
@@ -595,6 +631,28 @@ begin
     Rec := Rec^.Next;
   end;
   Exit(True);
+end;
+
+function f_See(Machine: PMachine; Param: Pointer): Boolean;
+var
+  Rec: PDictionaryRecord;
+  NameEnd: PAnsiChar;
+begin
+  NameEnd := SkipName(Machine^.FSource, Machine^.FSourceEnd);
+  if Machine^.FDictionary.Find(Machine^.FSource, NameEnd, Rec) then begin
+    Machine^.FSource := NameEnd;
+    if Rec^.IsColonDefinition then begin
+      Writeln(Rec^.Source);
+    end else begin
+      Writeln('Built-in opcode ', Rec^.Opcode);
+    end;
+    Exit(True);
+  end else begin
+    // TODO check for experimental support
+    Machine^.UnrecognizedWord(Machine^.FSource, NameEnd);
+    Machine^.FSource := NameEnd;
+    Exit(False);
+  end;
 end;
 
 function f_PrintLiteralStr(Machine: PMachine; Param: Pointer): Boolean;
@@ -725,6 +783,9 @@ begin
     FStack := FStackEnd; // TODO some padding for little safety
   {$ENDIF}
 
+  FSourceIndex := -1;
+  FSourceID := -1;
+
   // TODO be more adaptive: allow expanding code size
   SetLength(FCodeArray, 4 * 1024);
   FCodeBegin := @FCodeArray[0];
@@ -787,6 +848,7 @@ procedure TMachine.ConfigureExperimental;
 begin
   RegIntrinsic('.',       @f_Dot, OP_DOT);
   RegIntrinsic('WORDS',   @f_Words, OP_WORDS);
+  RegIntrinsic('SEE',     @f_See, OP_SEE);
 end;
 
 procedure TMachine.ConfigureREPL;
@@ -1075,17 +1137,26 @@ begin
   Exit(False);
 end;
 
-function TMachine.Interpret(S, SEnd: PAnsiChar): Boolean;
+procedure TMachine.AddSource(const S: AnsiString; ID: TValueFileID);
+begin
+  FSourceID := ID;
+  Inc(FSourceIndex);
+  SetLength(FSources, Length(FSources) + 1);
+  FSources[FSourceIndex] := S;
+end;
+
+function TMachine.InterpretLoop(S: PAnsiChar = nil; SEnd: PAnsiChar = nil): Boolean;
 var
   NameEnd: PAnsiChar;
   Definition: PDictionaryRecord;
   Number: TValueN;
 begin
-  FSourceBegin := S;
-  FSource := S;
-  FSourceEnd := SEnd;
+  FSourceBegin := @FSources[FSourceIndex][1];
+  FSource := FSourceBegin;
+  FSourceEnd := FSourceBegin + Length(FSources[FSourceIndex]);
 
-  S := SkipSpaces(S, SEnd);
+  SEnd := FSourceEnd;
+  S := SkipSpaces(FSourceBegin, SEnd);
   while S < SEnd do begin
     NameEnd := SkipName(S, SEnd);
     FSource := NameEnd + 1;
@@ -1135,25 +1206,26 @@ end;
 
 function TMachine.InterpretREPLInput(const Line: AnsiString): Boolean;
 begin
-  Exit(Interpret(@Line[1], @Line[1] + Length(Line)));
+  AddSource(Line, 0);
+  Exit(InterpretLoop);
 end;
 
 function TMachine.InterpretString(const S: AnsiString): Boolean;
 begin
-  Exit(Interpret(@S[1], @S[1] + Length(S)));
+  AddSource(S, -1);
+  Exit(InterpretLoop);
 end;
 
 function TMachine.InterpretFile(const FileName: AnsiString): Boolean;
 var
-  Content: PAnsiChar;
-  ContentLen: SizeUInt;
+  Content: AnsiString;
 begin
-  if not ReadFileContent(FileName, 0, Content, ContentLen) then
+  if not ReadFileContent(FileName, Content) then
     Exit(Error('could not read ' + FileName));
 
-  Result := Interpret(Content, Content + ContentLen);
+  AddSource(Content, -1);
 
-  FreeMem(Content);
+  Result := InterpretLoop;
 
   Exit;
 end;
