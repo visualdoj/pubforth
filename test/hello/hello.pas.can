@@ -1,3 +1,11 @@
+procedure MAIN;
 begin
-  Writeln('Hello world!');
+  Write('Hello world!');
+  Writeln;
+  Exit;
+  Exit;
+end;
+
+begin
+  MAIN;
 end.

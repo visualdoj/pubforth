@@ -14,6 +14,8 @@ unit pubforth_backend_pascal;
 interface
 
 uses
+  pubforth_core,
+  pubforth_machine,
   pubforth_backend,
   pubforth_shell;
 
@@ -75,6 +77,12 @@ implementation
 
 type
 TBackendPascal = object(TBackend)
+private
+  FStdoutPrepared: Boolean;
+
+  procedure PrepareStdout;
+  function  EscapeIdentifier(const Identifier: AnsiString): AnsiString;
+
 public
   constructor Init;
   destructor Done; virtual;
@@ -85,6 +93,19 @@ end;
 
 var
   BackendPascal: TBackendPascal;
+
+procedure TBackendPascal.PrepareStdout;
+begin
+  if FStdoutPrepared then
+    Exit;
+
+  FStdoutPrepared := True;
+end;
+
+function  TBackendPascal.EscapeIdentifier(const Identifier: AnsiString): AnsiString;
+begin
+  Exit(Identifier);
+end;
 
 constructor TBackendPascal.Init;
 begin
@@ -97,10 +118,71 @@ begin
 end;
 
 function  TBackendPascal.Translate(Task: PTranslationTask): Boolean;
+var
+  {$I pubforth_iterate_code_variables.inc};
+  Dictionary: PDictionary;
+  I: Int32;
+  It, Definition: PDictionaryRecord;
 begin
   OpenTextFile(Task^.OutputFileName);
+
+  Dictionary := Task^.Dictionary;
+  for I := 0 to 255 do begin
+    if Dictionary^.ReachableOpcodes[I] then begin
+      case I of
+        OP_NOP: ;
+        OP_END: ;
+        OP_LITERAL: ;
+        OP_CR: PrepareStdout;
+        OP_CALL: ;
+        OP_ENTER: ;
+        OP_DOT: PrepareStdout;
+        OP_BYE: ;
+        OP_RETURN: ;
+        OP_WORDS: Exit(Error('no backend semantics for WORDS'));
+        OP_PRINT_LITERAL_STR: PrepareStdout;
+        OP_SEE: Exit(Error('no backend semantics for SEE'));
+        OP_DOT_S: Exit(Error('no backend semantics for .S'));
+        OP_QUESTION: PrepareStdout;
+        OP_STATE: Exit(Error('no backend semantics for STATE'));
+        OP_SOURCE_ID: Exit(Error('no backend semantics for SOURCE-ID'));
+      end;
+    end;
+  end;
+
+  // Colon definitions
+  It := Dictionary^.Last;
+  while It <> nil do begin
+    if It^.IsReachable and It^.IsColonDefinition then begin
+      WriteLine('procedure ' + EscapeIdentifier(It^.Name) + ';');
+      WriteLine('begin');
+      Definition := It;
+      {$I pubforth_iterate_code_begin.inc}
+        OP_NOP: ;
+        OP_END:     WriteLine('  Exit;');
+        // OP_LITERAL: WriteLine('  LITERAL' + IntToStr({$I pubforth_iterate_code_arg_n.inc}));
+        OP_CR:      WriteLine('  Writeln;');
+        OP_CALL:    WriteLine('  ' + EscapeIdentifier({$I pubforth_iterate_code_arg_xt.inc}^.Name) + ';');
+        OP_ENTER: ;
+        // OP_DOT:     WriteLine('  Write(W^); Dec(W);');
+        OP_BYE:     WriteLine('  Halt(0);');
+        OP_RETURN:  WriteLine('  Exit;');
+        OP_WORDS:   Exit(Error('no backend semantics for WORDS'));
+
+        // TODO escape string:
+        OP_PRINT_LITERAL_STR:   WriteLine('  Write(''' + SliceToAnsiString({$I pubforth_iterate_code_arg_slice.inc}) + ''');');
+        else
+          WriteLine('  ' + HexStr({$I pubforth_iterate_code_opcode.inc}, 2));
+      {$I pubforth_iterate_code_end.inc}
+      WriteLine('end;');
+      WriteLine('');
+    end;
+
+    It := It^.Next;
+  end;
+
   WriteLine('begin');
-  WriteLine('  Writeln(''Hello world!'');');
+  WriteLine('  ' + EscapeIdentifier(Task^.Main^.Name) + ';');
   WriteLine('end.');
   CloseTextFile;
 
