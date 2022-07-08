@@ -1,3 +1,5 @@
+procedure MAIN; forward;
+
 procedure MAIN;
 begin
   Write('Hello world!');

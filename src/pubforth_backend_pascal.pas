@@ -158,6 +158,7 @@ begin
       WriteLine('procedure ' + EscapeIdentifier(It^.Name) + '; forward;');
     It := It^.Next;
   end;
+  WriteLine('');
 
   // Colon definitions
   It := Dictionary^.Last;
