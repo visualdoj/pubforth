@@ -655,6 +655,28 @@ begin
   end;
 end;
 
+function f_DotS(Machine: PMachine; Param: Pointer): Boolean;
+var
+  Cell, CellEnd: PCell;
+begin
+{$IF STACK_DIRECTION_UP}
+  Cell := Machine^.FStackBegin + 1;
+  CellEnd := Machine^.FStack;
+  while Cell <= CellEnd do begin
+    Write(TValueN(Cell^), ' ');
+    Inc(Cell);
+  end;
+{$ELSE}
+  Cell := Machine^.FStackEnd - 1;
+  CellEnd := Machine^.FStack;
+  while Cell >= CellEnd do begin
+    Write(TValueN(Cell^), ' ');
+    Dec(Cell);
+  end;
+{$ENDIF}
+  Exit(True);
+end;
+
 function f_PrintLiteralStr(Machine: PMachine; Param: Pointer): Boolean;
 var
   LiteralStrEnd: PAnsiChar;
@@ -849,6 +871,7 @@ begin
   RegIntrinsic('.',       @f_Dot, OP_DOT);
   RegIntrinsic('WORDS',   @f_Words, OP_WORDS);
   RegIntrinsic('SEE',     @f_See, OP_SEE);
+  RegIntrinsic('.S',      @f_DotS, OP_SEE);
 end;
 
 procedure TMachine.ConfigureREPL;
