@@ -150,6 +150,15 @@ begin
     end;
   end;
 
+  // TODO fix iteration order (from first to last)
+  //      make colon definitions forward for now
+  It := Dictionary^.Last;
+  while It <> nil do begin
+    if It^.IsReachable and It^.IsColonDefinition then
+      WriteLine('procedure ' + EscapeIdentifier(It^.Name) + '; forward;');
+    It := It^.Next;
+  end;
+
   // Colon definitions
   It := Dictionary^.Last;
   while It <> nil do begin
