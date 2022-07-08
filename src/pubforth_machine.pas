@@ -170,7 +170,7 @@ end;
 
 TMachine = object
 private
-  FState: PtrInt;
+  FState: TValueN;
   FDictionary: TDictionary;
 
   // Current input source
@@ -180,7 +180,7 @@ private
 
   FSources: array of AnsiString;
   FSourceIndex: Int32; // current source index
-  FSourceID: TValueFlag; // for SOURCE-ID
+  FSourceID: TValueN; // for SOURCE-ID
 
   FBase: PtrInt;
 
@@ -677,6 +677,28 @@ begin
   Exit(True);
 end;
 
+function f_Question(Machine: PMachine; Param: Pointer): Boolean;
+begin
+  Write(TValueN(Pointer(Machine^.FStack^)^), ' ');
+  WDrop(Machine^.FStack);
+  Exit(True);
+end;
+
+function f_State(Machine: PMachine; Param: Pointer): Boolean;
+begin
+  // TODO garantee read-only
+  WGrow(Machine^.FStack);
+  Machine^.FStack^ := @Machine^.FState;
+  Exit(True);
+end;
+
+function f_SourceID(Machine: PMachine; Param: Pointer): Boolean;
+begin
+  WGrow(Machine^.FStack);
+  TValueN(PtrUInt(Machine^.FStack^)) := Machine^.FSourceID;
+  Exit(True);
+end;
+
 function f_PrintLiteralStr(Machine: PMachine; Param: Pointer): Boolean;
 var
   LiteralStrEnd: PAnsiChar;
@@ -868,10 +890,13 @@ end;
 
 procedure TMachine.ConfigureExperimental;
 begin
-  RegIntrinsic('.',       @f_Dot, OP_DOT);
-  RegIntrinsic('WORDS',   @f_Words, OP_WORDS);
-  RegIntrinsic('SEE',     @f_See, OP_SEE);
-  RegIntrinsic('.S',      @f_DotS, OP_SEE);
+  RegIntrinsic('.',         @f_Dot, OP_DOT);
+  RegIntrinsic('WORDS',     @f_Words, OP_WORDS);
+  RegIntrinsic('SEE',       @f_See, OP_SEE);
+  RegIntrinsic('.S',        @f_DotS, OP_DOT_S);
+  RegIntrinsic('?',         @f_Question, OP_QUESTION);
+  RegIntrinsic('STATE',     @f_State, OP_STATE);
+  RegIntrinsic('SOURCE-ID', @f_SourceID, OP_SOURCE_ID);
 end;
 
 procedure TMachine.ConfigureREPL;

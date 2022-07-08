@@ -36,6 +36,12 @@ const
   OP_WORDS        = 9;
   OP_PRINT_LITERAL_STR    = 10;
   OP_SEE          = 11;
+  OP_DOT_S        = 12;
+  OP_QUESTION     = 13;
+  OP_STATE        = 14;
+  OP_SOURCE_ID    = 15;
+
+
 
 
 implementation
